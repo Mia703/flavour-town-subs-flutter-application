@@ -27,6 +27,7 @@ class MainApp extends StatelessWidget {
   }
 }
 
+// ================== HOME PAGE ==================
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -39,28 +40,46 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: Color.fromRGBO(241, 73, 36, 1),
-            title: Container(
-              alignment: Alignment.center,
-              child: const Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      'Flavour Town Subs',
-                      style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
+          backgroundColor: Color.fromRGBO(241, 73, 36, 1),
+          title: Container(
+            alignment: Alignment.center,
+            child: Row(
+              children: <Widget>[
+                const Expanded(
+                  child: Text(
+                    'Flavour Town Subs',
+                    style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
-                  Icon(
-                    Icons.menu,
-                    color: Colors.white,
-                    size: 30.0,
-                  ),
-                ],
-              ),
-            )),
+                ),
+                // IconButton(
+                //   onPressed: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(builder: (context) => NextPage()),
+                //     );
+                //   },
+                //   icon: const Icon(
+                //     Icons.menu,
+                //     color: Colors.white,
+                //     size: 30.0,
+                //   ),
+                // ),
+                FilledButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        // TODO: change to loginPage
+                        MaterialPageRoute(builder: (context) => ProductsPage()),
+                      );
+                    },
+                    child: const Text('Login'))
+              ],
+            ),
+          ),
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -146,9 +165,8 @@ class _HomePageState extends State<HomePage> {
                     child: Text(
                       'sandwiches made to delight',
                       style: TextStyle(
-                        color: Color.fromRGBO(91, 50, 14, 1),
-                        fontWeight: FontWeight.bold
-                      ),
+                          color: Color.fromRGBO(91, 50, 14, 1),
+                          fontWeight: FontWeight.bold),
                     )),
               ),
               // ================== menu
@@ -335,5 +353,238 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ));
+  }
+}
+
+// ================== LOGIN PAGE ==================
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  // retrieves inputs
+  final TextEditingController loginController_email = TextEditingController();
+  final TextEditingController loginConroller_password = TextEditingController();
+
+  @override
+  void dispose() {
+    loginController_email.dispose();
+    loginConroller_password.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(241, 73, 36, 1),
+        title: const Text(
+          'Flavour Town Subs',
+          style: TextStyle(
+              fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+      ),
+      body: Stack(
+        children: <Widget>[
+          // ================== background image
+          Image.network(
+            'https://images.unsplash.com/photo-1481070414801-51fd732d7184?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwcm9maWxlLXBhZ2V8MTh8fHxlbnwwfHx8fHw%3D',
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.cover,
+          ),
+          // ================== login form
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Color.fromRGBO(255, 190, 0, 1),
+              ),
+              child: Column(
+                children: [
+                  const Text(
+                    'Login',
+                    style: TextStyle(
+                        fontSize: 48,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromRGBO(91, 50, 14, 1)),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  const Text(
+                    'Login to access flavour on another dimension.',
+                    style: TextStyle(color: Color.fromRGBO(91, 50, 14, 1)),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  // ================== login form input
+                  TextField(
+                    controller: loginController_email,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Email',
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    controller: loginConroller_password,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Password',
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  // ================== submit button
+                  FilledButton(
+                    style: const ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll<Color>(
+                          Color.fromRGBO(0, 102, 164, 1)),
+                    ),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content: Text(loginController_email.text +
+                                  " " +
+                                  loginConroller_password.text),
+                            );
+                          });
+                    },
+                    child: const Text(
+                      'Submit',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  // ================== link to account creation
+                  const Text('Don\'t Have an Account? Create one here.'),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ================== SIGN UP PAGE ==================
+
+// ================== PRODUCTS PAGE ==================
+class ProductsPage extends StatefulWidget {
+  const ProductsPage({super.key});
+
+  @override
+  State<ProductsPage> createState() => _ProductsPageState();
+}
+
+class _ProductsPageState extends State<ProductsPage> {
+  // List of items in our dropdown menu
+  var items = [
+    'Hot Subs',
+    'Cold Subs',
+    'Sides, Drinks, and Desserts',
+  ];
+
+  // Initial Selected Value
+  String dropdownValue = 'Hot Subs';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Container(
+          alignment: Alignment.center,
+          child: const Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  'Flavour Town Subs',
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromRGBO(241, 73, 36, 1)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: Stack(
+        children: <Widget>[
+          Column(
+            children: [
+              // ================== dropdown menu
+              Container(
+                padding: const EdgeInsets.only(
+                    top: 5, bottom: 5, left: 20, right: 20),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                        color: Colors.blue, width: 2, style: BorderStyle.solid),
+                    bottom: BorderSide(
+                        color: Colors.blue, width: 2, style: BorderStyle.solid),
+                  ),
+                ),
+                child: DropdownButton(
+                  // Initial Value
+                  value: dropdownValue,
+                  // Down Arrow Icon
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  // Array list of items
+                  items: items.map((String items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Text(items),
+                    );
+                  }).toList(),
+                  // After selecting the desired option,it will
+                  // change button value to selected value
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      dropdownValue = newValue!;
+                    });
+                  },
+                  isExpanded: true,
+                ),
+              ),
+              // TODO: ================== menu items GO HERE
+            ],
+          ),
+          // ================== cart container
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: Container(
+                child: const Row(
+                  children: [
+                    Text("View Cart"),
+                    Text("\$12.99"),
+                  ],
+                ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
