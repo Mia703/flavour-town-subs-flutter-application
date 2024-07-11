@@ -12,8 +12,8 @@ const primaryColourTransparent = Colors.transparent;
 // ============== PRIMARY FONT SIZES ==============
 const headerOne = 32.0;
 const headerTwo = 20.0;
-const headerThree = 16.0;
-const paragraph = 14.0;
+const headerThree = 18.0;
+const paragraph = 16.0;
 const attribution = 12.0;
 
 // ============== PRIMARY FONT WEIGHT ==============
@@ -28,14 +28,15 @@ const italic = FontStyle.italic;
 const primaryPaddingNumber = 16.0;
 const primaryPadding = EdgeInsets.all(primaryPaddingNumber);
 const primaryPaddingWithIcon = EdgeInsets.only(
-  top: 16,
-  bottom: 16,
+  top: 10,
+  bottom: 10,
   left: 16,
-  right: 5,
+  right: 10,
 );
 
 // margin
 const primaryMarginNumber = 12.0;
+const primaryMarginAll = EdgeInsets.all(primaryMarginNumber);
 const primaryMarginTopBottom =
     EdgeInsets.only(top: primaryMarginNumber, bottom: primaryMarginNumber);
 const primaryMarginLeftRight =

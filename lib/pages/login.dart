@@ -1,3 +1,4 @@
+import 'package:flavour_town_subs_flutter_application/pages/signup.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -27,10 +28,11 @@ class _LoginPageState extends State<LoginPage> {
       // ================== APP BAR ==================
       appBar: AppBar(
         backgroundColor: primaryColourRed,
+        foregroundColor: primaryBackgroundColour,
         title: const Text(
           'Flavour Town Subs',
           style: TextStyle(
-            fontSize: 20.0,
+            fontSize: headerTwo,
             fontWeight: bold,
             color: primaryBackgroundColour,
           ),
@@ -47,10 +49,10 @@ class _LoginPageState extends State<LoginPage> {
             height: double.infinity,
             fit: BoxFit.cover,
           ),
-          // ================== login form ==================
+          // ================== LOGIN FORM CONTAINER ==================
           Center(
             child: Container(
-              margin: primaryMarginTopBottom,
+              margin: primaryMarginAll * 2.5,
               padding: primaryPadding,
               decoration: const BoxDecoration(
                 borderRadius: primaryBorderRadius,
@@ -71,7 +73,11 @@ class _LoginPageState extends State<LoginPage> {
                   // ================== login form sub-header
                   const Text(
                     'Login to access flavour on another dimension.',
-                    style: TextStyle(color: primaryFontColour),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: headerTwo,
+                      color: primaryFontColour,
+                    ),
                   ),
                   const SizedBox(height: textSpacerNumber * 4),
                   // ================== login form - email input
@@ -101,19 +107,41 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       // TODO: do something...
                     },
+                    style: const ButtonStyle(
+                      backgroundColor:
+                          WidgetStatePropertyAll(primaryFontColour),
+                    ),
                     child: const Text('Submit'),
                   ),
                   textSpacer,
                   // ================== create account link
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Don\' have an account?'),
+                      const Text(
+                        'Don\'t have an account?',
+                        style: TextStyle(
+                          color: primaryFontColour,
+                        ),
+                      ),
                       TextButton(
                           onPressed: () {
-                            // TODO: do something...
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const SignUpPage()));
                           },
-                          child: const Text('Sign up')),
-                      const Text('.'),
+                          style: const ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(
+                                primaryColourTransparent),
+                            padding: WidgetStatePropertyAll(EdgeInsets.all(0)),
+                          ),
+                          child: const Text(
+                            'Sign up',
+                            style: TextStyle(
+                                color: primaryFontColour,
+                                decoration: TextDecoration.underline),
+                          )),
                     ],
                   ),
                 ],

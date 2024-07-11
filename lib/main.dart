@@ -170,6 +170,7 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(
                         fontWeight: FontWeight.w400,
                         color: primaryFontColour,
+                        fontSize: paragraph,
                       ),
                     ),
                   ],
@@ -188,6 +189,7 @@ class _HomePageState extends State<HomePage> {
                           Text(
                             "Hot Subs that Sizzle",
                             style: TextStyle(
+                              fontSize: headerThree,
                               fontWeight: bold,
                               color: primaryFontColour,
                             ),
@@ -206,6 +208,7 @@ class _HomePageState extends State<HomePage> {
                           Text(
                             "Cool and Crisp Cold Subs",
                             style: TextStyle(
+                              fontSize: headerThree,
                               fontWeight: bold,
                               color: primaryFontColour,
                             ),
@@ -223,6 +226,7 @@ class _HomePageState extends State<HomePage> {
                           Text(
                             "Sides, Drinks, and Desserts",
                             style: TextStyle(
+                              fontSize: headerThree,
                               fontWeight: bold,
                               color: primaryFontColour,
                             ),
