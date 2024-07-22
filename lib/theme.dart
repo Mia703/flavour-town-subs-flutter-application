@@ -1,19 +1,18 @@
 // ============== PRIMARY COLOURS ==============
 import 'package:flutter/material.dart';
 
-const primaryFontColour = Color.fromRGBO(91, 50, 14, 1);
-const primaryBackgroundColour = Colors.white;
-
-const primaryColourRed = Color.fromRGBO(241, 73, 36, 1);
-const primaryColourYellow = Color.fromRGBO(255, 190, 0, 1);
-const primaryColourLightBrown = Color.fromRGBO(237, 219, 195, 1);
+const primaryBlack = Colors.black;
+const primaryWhite = Color.fromRGBO(243, 238, 238, 1);
+const primaryColourRed = Color.fromRGBO(184, 0, 0, 1);
+const primaryColourLightGrey = Color.fromRGBO(231, 231, 231, 1);
 const primaryColourTransparent = Colors.transparent;
+const primaryOverlay = Color.fromRGBO(61, 61, 61, 0.623);
 
 // ============== PRIMARY FONT SIZES ==============
 const headerOne = 32.0;
-const headerTwo = 20.0;
+const headerTwo = 28.0;
 const headerThree = 18.0;
-const paragraph = 16.0;
+const paragraph = 18.0;
 const attribution = 12.0;
 
 // ============== PRIMARY FONT WEIGHT ==============
@@ -25,35 +24,41 @@ const italic = FontStyle.italic;
 
 // ============== PRIMARY LAYOUT ==============
 // padding
-const primaryPaddingNumber = 16.0;
-const primaryPadding = EdgeInsets.all(primaryPaddingNumber);
-const primaryPaddingWithIcon = EdgeInsets.only(
-  top: 10,
-  bottom: 10,
-  left: 16,
-  right: 10,
+const primaryPadding = 16.0;
+const primaryPaddingAll = EdgeInsets.all(primaryPadding);
+const primaryPaddingAllWithIcon = EdgeInsets.only(
+  top: primaryPadding,
+  bottom: primaryPadding,
+  left: primaryPadding + 15,
+  right: primaryPadding + 15,
 );
 
 // margin
-const primaryMarginNumber = 12.0;
-const primaryMarginAll = EdgeInsets.all(primaryMarginNumber);
+const primaryMargin = 16.0;
+const primaryMarginAll = EdgeInsets.all(primaryMargin);
 const primaryMarginTopBottom =
-    EdgeInsets.only(top: primaryMarginNumber, bottom: primaryMarginNumber);
+    EdgeInsets.only(top: primaryMargin, bottom: primaryMargin);
 const primaryMarginLeftRight =
-    EdgeInsets.only(left: primaryMarginNumber, right: primaryMarginNumber);
-const primaryMarginBottom = EdgeInsets.only(bottom: 16.0);
+    EdgeInsets.only(left: primaryMargin, right: primaryMargin);
+const primaryMarginBottom = EdgeInsets.only(bottom: primaryMargin);
+
+// pageview on onboarding pages
+const primaryMarginTopBottomPageView =
+    EdgeInsets.only(top: primaryMargin, bottom: primaryMargin * 4);
 
 // border radius
-const primaryBorderRadius = BorderRadius.all(Radius.circular(20.0));
-const primaryBorderRadiusTop = BorderRadius.only(
-    topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0));
-const primaryBorderRadiusBottom = BorderRadius.only(
-    bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0));
+const primaryRadius = Radius.circular(20.0);
+const primaryBorderRadius = BorderRadius.all(primaryRadius);
+const primaryBorderRadiusTop =
+    BorderRadius.only(topLeft: primaryRadius, topRight: primaryRadius);
+const primaryBorderRadiusBottom =
+    BorderRadius.only(bottomLeft: primaryRadius, bottomRight: primaryRadius);
 
 // border
 const borderSolid = BorderStyle.solid;
 
 // spacers
-const textSpacerNumber = 10.00;
-const textSpacer = SizedBox(height: textSpacerNumber);
-const footerTextSpacer = SizedBox(width: textSpacerNumber * 10);
+const primarySpacer = 10.00;
+const primarySizedBox = SizedBox(height: primarySpacer);
+const primarySizedBoxWidth = SizedBox(width: primarySpacer);
+const primarySizedBoxFooter = SizedBox(width: primarySpacer * 10);
