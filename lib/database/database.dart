@@ -165,6 +165,14 @@ class FlutterDatabase {
     }
   }
 
+  Future<List<Product>> readAllProducts() async {
+    final db = await instance.database;
+    const alphaOrder = '${ProductsColumns.productName} ASC';
+    final result = await db
+        .rawQuery('SELECT * FROM $productsTableName ORDER BY $alphaOrder');
+    return result.map((json) => Product.fromJSON(json)).toList();
+  }
+
   Future<int> updateProduct(Product product) async {
     final db = await instance.database;
     return db.update(productsTableName, product.toJSON(),
@@ -204,8 +212,7 @@ class FlutterDatabase {
   Future<int> updateOrder(Order order) async {
     final db = await instance.database;
     return db.update(ordersTableName, order.toJSON(),
-        where: '${OrdersColumns.orderId} = ?',
-        whereArgs: [order.orderId]);
+        where: '${OrdersColumns.orderId} = ?', whereArgs: [order.orderId]);
   }
 
   Future<int> deleteOrder(String orderId) async {
