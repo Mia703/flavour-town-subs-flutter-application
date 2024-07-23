@@ -1,4 +1,4 @@
-import 'package:flavour_town_subs_flutter_application/pages/products_page.dart';
+import 'package:flavour_town_subs_flutter_application/pages/components/products_grid_cold.dart';
 import 'package:flavour_town_subs_flutter_application/pages/signup_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
@@ -107,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const ProductsPage()));
+                                builder: (context) => const ProductsGrid()));
                       },
                       style: const ButtonStyle(
                           backgroundColor: WidgetStatePropertyAll(primaryBlack),

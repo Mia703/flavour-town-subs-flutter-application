@@ -1,9 +1,16 @@
+import 'package:flavour_town_subs_flutter_application/api.dart';
 import 'package:flavour_town_subs_flutter_application/pages/home_page.dart';
+import 'package:flavour_town_subs_flutter_application/pages/components/products_grid_cold.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(url: supabaseURL, anonKey: supabaseKey);
+
   runApp(const MainApp());
 }
 
@@ -23,6 +30,7 @@ class MainApp extends StatelessWidget {
         textTheme: GoogleFonts.anybodyTextTheme(Theme.of(context).textTheme),
       ),
       home: const Scaffold(
+        // body: ProductsGrid(),
         body: HomePage(),
       ),
     );

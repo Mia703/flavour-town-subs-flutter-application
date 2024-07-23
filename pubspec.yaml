@@ -12,6 +12,7 @@ dependencies:
   google_fonts: ^6.2.1
   path: ^1.9.0
   smooth_page_indicator: ^1.2.0+3
+  supabase_flutter: ^2.5.9
   uuid: ^4.4.2
 
 dev_dependencies:
@@ -23,4 +24,4 @@ flutter:
   uses-material-design: true
   assets:
     - lib/assets/
-    - lib/database/product_images/
+    - lib/db/product_images/
