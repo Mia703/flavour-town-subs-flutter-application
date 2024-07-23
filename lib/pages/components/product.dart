@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 class Product extends StatefulWidget {
-  String productName;
-
   const Product({super.key});
 
   @override
