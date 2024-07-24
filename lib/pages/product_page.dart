@@ -17,6 +17,7 @@ class _ProductPageState extends State<ProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primaryColourWhite,
+      appBar: AppBar(),
       body: SafeArea(
         child: Stack(
           children: [

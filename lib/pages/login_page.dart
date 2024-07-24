@@ -2,6 +2,7 @@ import 'package:flavour_town_subs_flutter_application/pages/product_page.dart';
 import 'package:flavour_town_subs_flutter_application/pages/signup_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 // ================== LOGIN PAGE ==================
 class LoginPage extends StatefulWidget {
@@ -13,12 +14,14 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   // retrieves inputs
-  final TextEditingController loginControllerEmail = TextEditingController();
+  final TextEditingController loginControllerUsername = TextEditingController();
   final TextEditingController loginControllerPassword = TextEditingController();
+
+  final supabase = Supabase.instance.client;
 
   @override
   void dispose() {
-    loginControllerEmail.dispose();
+    loginControllerUsername.dispose();
     loginControllerPassword.dispose();
     super.dispose();
   }
@@ -44,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
               height: double.infinity,
               color: primaryOverlay,
             ),
+            // ================== LOGIN FORM ==================
             Center(
               child: Container(
                 margin: primaryMarginAll,
@@ -77,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: primarySpacer * 4),
                     // ================== login form - username input
                     TextField(
-                      controller: loginControllerEmail,
+                      controller: loginControllerUsername,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Username',
@@ -102,12 +106,28 @@ class _LoginPageState extends State<LoginPage> {
                     primarySizedBox,
                     // ================== submit button
                     FilledButton(
-                      onPressed: () {
-                        // TODO: submit login form...
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ProductPage()));
+                      onPressed: () async {
+                        try {
+                          final response = await supabase
+                              .from('users')
+                              .select('*')
+                              .eq('username', loginControllerUsername.text);
+
+                          // the user is not in the database
+                          if (response.isEmpty) {
+                            print('user does not exist, sign up');
+                          }
+                          // the user does exist, navigate to products page
+                          else {
+                            // return goToProductsPage();
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ProductPage()));
+                          }
+                        } catch (e) {
+                          throw Exception('Error: $e');
+                        }
                       },
                       style: const ButtonStyle(
                           backgroundColor:

@@ -2,6 +2,8 @@ import 'package:flavour_town_subs_flutter_application/pages/login_page.dart';
 import 'package:flavour_town_subs_flutter_application/pages/product_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 // ================== SIGN UP PAGE ==================
 class SignUpPage extends StatefulWidget {
@@ -12,12 +14,26 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  var uuid = const Uuid();
+
   // retrieves inputs
-  final TextEditingController signUpControllerName = TextEditingController();
+  final TextEditingController signUpControllerFirstName =
+      TextEditingController();
+  final TextEditingController signUpControllerLastName =
+      TextEditingController();
+  final TextEditingController signUpControllerUsername =
+      TextEditingController();
+  final TextEditingController signUpControllerPassword =
+      TextEditingController();
+
+  final supabase = Supabase.instance.client;
 
   @override
   void dispose() {
-    signUpControllerName.dispose();
+    signUpControllerFirstName.dispose();
+    signUpControllerLastName.dispose();
+    signUpControllerUsername.dispose();
+    signUpControllerPassword.dispose();
     super.dispose();
   }
 
@@ -76,7 +92,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     const SizedBox(height: primarySpacer * 2),
                     // ================== sign up form - first name input
                     TextField(
-                      controller: signUpControllerName,
+                      controller: signUpControllerFirstName,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'First Name',
@@ -89,7 +105,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     primarySizedBox,
                     // ================== sign up form - last name input
                     TextField(
-                      controller: signUpControllerName,
+                      controller: signUpControllerLastName,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Last Name',
@@ -102,7 +118,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     primarySizedBox,
                     // ================== sign up form - username input
                     TextField(
-                      controller: signUpControllerName,
+                      controller: signUpControllerUsername,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Username',
@@ -115,7 +131,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     primarySizedBox,
                     // ================== sign up form - password input
                     TextField(
-                      controller: signUpControllerName,
+                      controller: signUpControllerPassword,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Password',
@@ -128,12 +144,36 @@ class _SignUpPageState extends State<SignUpPage> {
                     primarySizedBox,
                     // ================== submit button
                     FilledButton(
-                      onPressed: () {
-                        // TODO: submit sign up form...
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ProductPage()));
+                      onPressed: () async {
+                        try {
+                          final response = await supabase
+                              .from('users')
+                              .select('*')
+                              .eq('username', signUpControllerUsername.text);
+
+                          // the user is not in the database
+                          if (response.isEmpty) {
+                            final data = await supabase.from('users').insert({
+                              'uuid': uuid.v1(),
+                              'firstname': signUpControllerFirstName.text,
+                              'lastname': signUpControllerLastName.text,
+                              'username': signUpControllerUsername.text,
+                              'password': signUpControllerPassword.text
+                            });
+
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ProductPage()));
+                          }
+                          // the user is in the database
+                          else {
+                            // TODO: alert that the username already exists
+                          }
+                        } catch (e) {
+                          // print('Error: $e');
+                          throw Exception('Error: $e');
+                        }
                       },
                       style: const ButtonStyle(
                           backgroundColor:
