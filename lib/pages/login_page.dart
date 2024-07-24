@@ -1,4 +1,4 @@
-import 'package:flavour_town_subs_flutter_application/pages/components/products_grid_cold.dart';
+import 'package:flavour_town_subs_flutter_application/pages/product_page.dart';
 import 'package:flavour_town_subs_flutter_application/pages/signup_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
                 padding: primaryPaddingAll * 2,
                 decoration: const BoxDecoration(
                   borderRadius: primaryBorderRadius,
-                  color: primaryWhite,
+                  color: primaryColourWhite,
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(
                         fontSize: headerOne,
                         fontWeight: bold,
-                        color: primaryBlack,
+                        color: primaryColourBlack,
                       ),
                     ),
                     primarySizedBox,
@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: headerTwo - 8,
-                        color: primaryBlack,
+                        color: primaryColourBlack,
                       ),
                     ),
                     const SizedBox(height: primarySpacer * 4),
@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                         border: OutlineInputBorder(),
                         labelText: 'Username',
                         filled: true,
-                        fillColor: primaryWhite,
+                        fillColor: primaryColourWhite,
                         labelStyle: TextStyle(fontSize: paragraph),
                       ),
                     ),
@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                           border: OutlineInputBorder(),
                           labelText: 'Password',
                           filled: true,
-                          fillColor: primaryWhite,
+                          fillColor: primaryColourWhite,
                           labelStyle: TextStyle(fontSize: paragraph)),
                     ),
                     primarySizedBox,
@@ -107,10 +107,11 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const ProductsGrid()));
+                                builder: (context) => const ProductPage()));
                       },
                       style: const ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(primaryBlack),
+                          backgroundColor:
+                              WidgetStatePropertyAll(primaryColourBlack),
                           padding: WidgetStatePropertyAll(
                               primaryPaddingAllWithIcon)),
                       child: const Text(
@@ -126,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                         const Text(
                           'Don\'t have an account?',
                           style: TextStyle(
-                            color: primaryBlack,
+                            color: primaryColourBlack,
                             fontSize: paragraph,
                           ),
                         ),
@@ -144,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: const Text(
                             'Sign up',
                             style: TextStyle(
-                              color: primaryBlack,
+                              color: primaryColourBlack,
                               fontSize: paragraph,
                               decoration: TextDecoration.underline,
                             ),

@@ -33,16 +33,17 @@ class _HomePageState extends State<HomePage> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              margin: const EdgeInsets.only(top: primaryMargin, bottom: primaryMargin * 1.5),
+              margin: const EdgeInsets.only(
+                  top: primaryMargin, bottom: primaryMargin * 1.5),
               child: SmoothPageIndicator(
                 controller: pageViewController,
                 count: 4,
                 effect: const ExpandingDotsEffect(
-                  dotColor: primaryWhite,
-                  activeDotColor: primaryWhite,
+                  dotColor: primaryColourWhite,
+                  activeDotColor: primaryColourWhite,
                   dotHeight: 20.0,
                   dotWidth: 20.0,
-                  spacing: primaryMargin
+                  spacing: primaryMargin,
                 ),
               ),
             ),

@@ -30,7 +30,7 @@ class Page4 extends StatelessWidget {
             // ================== TEXT CONTAINER ==================
             Container(
               padding: primaryPaddingAll,
-               margin: primaryMarginTopBottomPageView,
+              margin: primaryMarginTopBottomPageView,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +38,7 @@ class Page4 extends StatelessWidget {
                   const Text(
                     'Easy Ordering',
                     style: TextStyle(
-                        color: primaryWhite,
+                        color: primaryColourWhite,
                         fontSize: headerOne,
                         fontWeight: bold),
                   ),
@@ -46,7 +46,7 @@ class Page4 extends StatelessWidget {
                   const Text(
                     'Order your favorite subs in just a few taps. Our user-friendly app makes it quick and convenient to place your order for pickup or delivery. Craving a sub? We’ve got you covered.',
                     style: TextStyle(
-                        color: primaryWhite,
+                        color: primaryColourWhite,
                         fontSize: headerTwo,
                         fontWeight: bold),
                   ),
@@ -73,13 +73,13 @@ class Page4 extends StatelessWidget {
                           Text(
                             'Login',
                             style: TextStyle(
-                              color: primaryWhite,
+                              color: primaryColourWhite,
                               fontSize: headerTwo,
                             ),
                           ),
                           Icon(
                             Icons.arrow_forward,
-                            color: primaryWhite,
+                            color: primaryColourWhite,
                             size: headerTwo,
                           )
                         ],

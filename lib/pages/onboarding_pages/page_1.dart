@@ -38,7 +38,7 @@ class Page1 extends StatelessWidget {
                     Text(
                       'Welcome to Flavour Town!',
                       style: TextStyle(
-                          color: primaryWhite,
+                          color: primaryColourWhite,
                           fontSize: headerOne,
                           fontWeight: bold),
                     ),
@@ -46,7 +46,7 @@ class Page1 extends StatelessWidget {
                     Text(
                       'Experience the ultimate sub with fresh ingredients, mouth-watering flavours, and a unique taste that keeps you coming back for more.',
                       style: TextStyle(
-                          color: primaryWhite,
+                          color: primaryColourWhite,
                           fontSize: headerTwo,
                           fontWeight: bold),
                     ),

@@ -29,7 +29,7 @@ class Page2 extends StatelessWidget {
             // ================== TEXT CONTAINER ==================
             Container(
               padding: primaryPaddingAll,
-               margin: primaryMarginTopBottomPageView,
+              margin: primaryMarginTopBottomPageView,
               child: const Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +37,7 @@ class Page2 extends StatelessWidget {
                   Text(
                     'Fresh Ingredients',
                     style: TextStyle(
-                        color: primaryWhite,
+                        color: primaryColourWhite,
                         fontSize: headerOne,
                         fontWeight: bold),
                   ),
@@ -45,7 +45,7 @@ class Page2 extends StatelessWidget {
                   Text(
                     'We source only the finest ingredients for our subs. From crisp vegetables to premium meats, each bite is a testament to quality and freshness. Our commitment to excellence means you get a delicious sub every time.',
                     style: TextStyle(
-                        color: primaryWhite,
+                        color: primaryColourWhite,
                         fontSize: headerTwo,
                         fontWeight: bold),
                   )

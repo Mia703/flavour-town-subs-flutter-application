@@ -15,7 +15,8 @@ class Page3 extends StatelessWidget {
           children: <Widget>[
             // ================== BACKGROUND IMAGE ==================
             const Image(
-              image: AssetImage('lib/assets/pexels-efrem-efre-2786187-23203214.jpg'),
+              image: AssetImage(
+                  'lib/assets/pexels-efrem-efre-2786187-23203214.jpg'),
               width: double.infinity,
               height: double.infinity,
               fit: BoxFit.cover,
@@ -29,7 +30,7 @@ class Page3 extends StatelessWidget {
             // ================== TEXT CONTAINER ==================
             Container(
               padding: primaryPaddingAll,
-               margin: primaryMarginTopBottomPageView,
+              margin: primaryMarginTopBottomPageView,
               child: const Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +38,7 @@ class Page3 extends StatelessWidget {
                   Text(
                     'Customisable Subs',
                     style: TextStyle(
-                        color: primaryWhite,
+                        color: primaryColourWhite,
                         fontSize: headerOne,
                         fontWeight: bold),
                   ),
@@ -45,7 +46,7 @@ class Page3 extends StatelessWidget {
                   Text(
                     'At Flavour Town Subs, we believe in personalise dining. Customise your sub to perfection with out wide range of toppings, sauces, and bread options. Your sub, your way.',
                     style: TextStyle(
-                        color: primaryWhite,
+                        color: primaryColourWhite,
                         fontSize: headerTwo,
                         fontWeight: bold),
                   )

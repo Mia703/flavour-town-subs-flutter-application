@@ -1,17 +1,18 @@
 // ============== PRIMARY COLOURS ==============
 import 'package:flutter/material.dart';
 
-const primaryBlack = Colors.black;
-const primaryWhite = Color.fromRGBO(243, 238, 238, 1);
+const primaryColourBlack = Colors.black;
+const primaryColourWhite = Color.fromRGBO(243, 238, 238, 1);
 const primaryColourRed = Color.fromRGBO(184, 0, 0, 1);
 const primaryColourLightGrey = Color.fromRGBO(231, 231, 231, 1);
+const primaryColourMediumGrey = Color.fromRGBO(212, 212, 212, 1);
 const primaryColourTransparent = Colors.transparent;
 const primaryOverlay = Color.fromRGBO(61, 61, 61, 0.623);
 
 // ============== PRIMARY FONT SIZES ==============
 const headerOne = 32.0;
 const headerTwo = 28.0;
-const headerThree = 18.0;
+const headerThree = 20.0;
 const paragraph = 18.0;
 const attribution = 12.0;
 
@@ -41,12 +42,14 @@ const primaryMarginTopBottom =
 const primaryMarginLeftRight =
     EdgeInsets.only(left: primaryMargin, right: primaryMargin);
 const primaryMarginBottom = EdgeInsets.only(bottom: primaryMargin);
+const primaryMarginRight = EdgeInsets.only(right: primaryMargin);
 
 // pageview on onboarding pages
 const primaryMarginTopBottomPageView =
     EdgeInsets.only(top: primaryMargin, bottom: primaryMargin * 4);
 
-// border radius
+// border
+const primaryRadiusNumber = 20.0;
 const primaryRadius = Radius.circular(20.0);
 const primaryBorderRadius = BorderRadius.all(primaryRadius);
 const primaryBorderRadiusTop =
