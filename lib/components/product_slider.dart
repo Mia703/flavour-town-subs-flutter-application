@@ -80,7 +80,7 @@ class _ProductSliderState extends State<ProductSlider> {
                   // ================= PRODUCT SLIDER CONTAINER
                   final List<Map<String, dynamic>> products = snapshot.data!;
                   return SizedBox(
-                    height: 300.00,
+                    height: 350.00,
                     width: double.infinity,
                     // ================= LIST VIEW
                     child: ListView.builder(

@@ -1,3 +1,4 @@
+import 'package:flavour_town_subs_flutter_application/components/product_detail_.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,7 @@ class ProductButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      // FIXME: after resizing images, make width smaller
       width: 300.00,
       margin: addMargin('lr', 8.00),
       child: OutlinedButton(
@@ -35,15 +37,17 @@ class ProductButton extends StatelessWidget {
         ),
         onPressed: () {
           // TODO: on click add to cart list
+          showProductDetailWidget(
+              context, name, description, '\$$price', '$imagePath$image');
         },
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // ================= IMAGE CONTAINER =================
             Container(
-              color: primaryColourLightGrey,
+              // TODO: remove or keep?
+              // color: primaryColourLightGrey,
               child: Image(
                 image: AssetImage('$imagePath$image'),
                 alignment: Alignment.center,

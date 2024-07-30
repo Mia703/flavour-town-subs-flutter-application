@@ -36,7 +36,7 @@ class _ProductPageState extends State<ProductPage> {
               alignment: Alignment.bottomCenter,
               child: Container(
                 margin: addMargin('default', 16.00),
-                padding: addPadding('default', 5.00) + addPadding('lr', 5.00),
+                padding: addPadding('tb', 6.00) + addPadding('lr', 5.00),
                 decoration: BoxDecoration(
                   color: primaryColourDarkGrey,
                   borderRadius: addBorderRadius('default', 2000.00),
@@ -67,9 +67,14 @@ class _ProductPageState extends State<ProductPage> {
                       child: const Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
-                            Icons.shopping_bag,
-                            size: headerTwo,
+                          Badge(
+                            label: Text('0'),
+                            backgroundColor: primaryColourRed,
+                            textColor: primaryColourWhite,
+                            child: Icon(
+                              Icons.shopping_bag,
+                              size: headerTwo,
+                            ),
                           ),
                           Text(
                             'Cart',

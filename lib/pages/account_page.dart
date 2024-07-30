@@ -29,14 +29,16 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: primaryColourWhite,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
             padding: addPadding('default', 16.00),
             child: Column(
               children: [
-                const Text('Welcome, First LastName'),
+                const Text('First LastName'),
                 Container(
                   child: Column(
                     children: [
