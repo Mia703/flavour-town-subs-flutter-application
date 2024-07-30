@@ -1,4 +1,5 @@
 import 'package:flavour_town_subs_flutter_application/components/product_slider.dart';
+import 'package:flavour_town_subs_flutter_application/pages/account_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -24,7 +25,8 @@ class _ProductPageState extends State<ProductPage> {
                   children: <Widget>[
                     ProductSlider(header: 'Hot Subs', type: 'hot'),
                     ProductSlider(header: 'Cold Subs', type: 'cold'),
-                    ProductSlider(header: 'Sides, Drinks, and Desserts', type: 'side'),
+                    ProductSlider(
+                        header: 'Sides, Drinks, and Desserts', type: 'side'),
                   ],
                 ),
               ),
@@ -34,6 +36,7 @@ class _ProductPageState extends State<ProductPage> {
               alignment: Alignment.bottomCenter,
               child: Container(
                 margin: addMargin('default', 16.00),
+                padding: addPadding('default', 5.00) + addPadding('lr', 5.00),
                 decoration: BoxDecoration(
                   color: primaryColourDarkGrey,
                   borderRadius: addBorderRadius('default', 2000.00),
@@ -41,25 +44,60 @@ class _ProductPageState extends State<ProductPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    // ================= MENU BUTTON
                     MaterialButton(
                       onPressed: () {},
-                      child: const Icon(
-                        Icons.fastfood,
-                        size: headerTwo,
+                      child: const Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.fastfood,
+                            size: headerTwo,
+                          ),
+                          Text(
+                            'Menu',
+                            style: TextStyle(fontSize: paragraph - 5),
+                          ),
+                        ],
                       ),
                     ),
+                    // ================= CART BUTTON
                     MaterialButton(
                       onPressed: () {},
-                      child: const Icon(
-                        Icons.shopping_bag,
-                        size: headerTwo,
+                      child: const Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.shopping_bag,
+                            size: headerTwo,
+                          ),
+                          Text(
+                            'Cart',
+                            style: TextStyle(fontSize: paragraph - 5),
+                          )
+                        ],
                       ),
                     ),
+                    // ================= ACCOUNT BUTTON
                     MaterialButton(
-                      onPressed: () {},
-                      child: const Icon(
-                        Icons.account_circle,
-                        size: headerTwo,
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const AccountPage()));
+                      },
+                      child: const Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.account_circle,
+                            size: headerTwo,
+                          ),
+                          Text(
+                            'Account',
+                            style: TextStyle(fontSize: paragraph - 5),
+                          ),
+                        ],
                       ),
                     ),
                   ],
