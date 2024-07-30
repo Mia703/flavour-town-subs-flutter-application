@@ -1,67 +1,138 @@
-// ============== PRIMARY COLOURS ==============
 import 'package:flutter/material.dart';
 
+// ================= PRIMARY COLOURS =================
 const primaryColourBlack = Colors.black;
-const primaryColourWhite = Color.fromRGBO(243, 238, 238, 1);
+const primaryColourWhite = Colors.white;
 const primaryColourRed = Color.fromRGBO(184, 0, 0, 1);
+const primaryColourYellow = Color.fromRGBO(255, 190, 0, 1);
+const primaryColourBlue = Color.fromRGBO(0, 102, 164, 1);
 const primaryColourLightGrey = Color.fromRGBO(231, 231, 231, 1);
-const primaryColourMediumGrey = Color.fromRGBO(212, 212, 212, 1);
+const primaryColourDarkGrey = Color.fromRGBO(212, 212, 212, 1);
 const primaryColourTransparent = Colors.transparent;
-const primaryOverlay = Color.fromRGBO(61, 61, 61, 0.623);
+const primaryColourOverlay = Color.fromRGBO(61, 61, 61, 0.623);
 
-// ============== PRIMARY FONT SIZES ==============
+// ================= PRIMARY FONT SIZES =================
 const headerOne = 32.0;
 const headerTwo = 28.0;
 const headerThree = 20.0;
-const paragraph = 18.0;
-const attribution = 12.0;
+const paragraph = 16.0;
 
-// ============== PRIMARY FONT WEIGHT ==============
-const regular = FontWeight.w400;
+// ================= PRIMARY FONT WEIGHT =================
+const regular = FontWeight.normal;
 const medium = FontWeight.w500;
 const semibold = FontWeight.w600;
 const bold = FontWeight.bold;
 const italic = FontStyle.italic;
+const underline = TextDecoration.underline;
 
-// ============== PRIMARY LAYOUT ==============
-// padding
-const primaryPadding = 16.0;
-const primaryPaddingAll = EdgeInsets.all(primaryPadding);
-const primaryPaddingAllWithIcon = EdgeInsets.only(
-  top: primaryPadding,
-  bottom: primaryPadding,
-  left: primaryPadding + 15,
-  right: primaryPadding + 15,
-);
+// ================= PRIMARY LAYOUT =================
 
-// margin
-const primaryMargin = 16.0;
-const primaryMarginAll = EdgeInsets.all(primaryMargin);
-const primaryMarginTopBottom =
-    EdgeInsets.only(top: primaryMargin, bottom: primaryMargin);
-const primaryMarginLeftRight =
-    EdgeInsets.only(left: primaryMargin, right: primaryMargin);
-const primaryMarginBottom = EdgeInsets.only(bottom: primaryMargin);
-const primaryMarginRight = EdgeInsets.only(right: primaryMargin);
+EdgeInsets addPadding(String type, double padding) {
+  switch (type) {
+    case 'top':
+      {
+        return EdgeInsets.only(top: padding);
+      }
+    case 'bottom':
+      {
+        return EdgeInsets.only(bottom: padding);
+      }
+    case 'left':
+      {
+        return EdgeInsets.only(left: padding);
+      }
+    case 'right':
+      {
+        return EdgeInsets.only(right: padding);
+      }
+    case 'tb':
+      {
+        return EdgeInsets.only(top: padding, bottom: padding);
+      }
+    case 'lr':
+      {
+        return EdgeInsets.only(right: padding, left: padding);
+      }
+    default:
+      {
+        return EdgeInsets.all(padding);
+      }
+  }
+}
 
-// pageview on onboarding pages
-const primaryMarginTopBottomPageView =
-    EdgeInsets.only(top: primaryMargin, bottom: primaryMargin * 4);
+EdgeInsets addMargin(String type, double margin) {
+  switch (type) {
+    case 'top':
+      {
+        return EdgeInsets.only(top: margin);
+      }
+    case 'bottom':
+      {
+        return EdgeInsets.only(bottom: margin);
+      }
+    case 'left':
+      {
+        return EdgeInsets.only(left: margin);
+      }
+    case 'right':
+      {
+        return EdgeInsets.only(right: margin);
+      }
+    case 'tb':
+      {
+        return EdgeInsets.only(top: margin, bottom: margin);
+      }
+    case 'lr':
+      {
+        return EdgeInsets.only(right: margin, left: margin);
+      }
+    default:
+      {
+        return EdgeInsets.all(margin);
+      }
+  }
+}
 
-// border
-const primaryRadiusNumber = 20.0;
-const primaryRadius = Radius.circular(20.0);
-const primaryBorderRadius = BorderRadius.all(primaryRadius);
-const primaryBorderRadiusTop =
-    BorderRadius.only(topLeft: primaryRadius, topRight: primaryRadius);
-const primaryBorderRadiusBottom =
-    BorderRadius.only(bottomLeft: primaryRadius, bottomRight: primaryRadius);
+BorderRadius addBorderRadius(String type, double radius) {
+  switch (type) {
+    case 'tl':
+      {
+        return BorderRadius.only(topLeft: Radius.circular(radius));
+      }
+    case 'tr':
+      {
+        return BorderRadius.only(topRight: Radius.circular(radius));
+      }
+    case 'bl':
+      {
+        return BorderRadius.only(bottomLeft: Radius.circular(radius));
+      }
+    case 'br':
+      {
+        return BorderRadius.only(bottomRight: Radius.circular(radius));
+      }
+    default:
+      {
+        return BorderRadius.all(Radius.circular(radius));
+      }
+  }
+}
 
-// border
 const borderSolid = BorderStyle.solid;
 
-// spacers
-const primarySpacer = 10.00;
-const primarySizedBox = SizedBox(height: primarySpacer);
-const primarySizedBoxWidth = SizedBox(width: primarySpacer);
-const primarySizedBoxFooter = SizedBox(width: primarySpacer * 10);
+SizedBox addSpacer(String type, double amount) {
+  switch (type) {
+    case 'height':
+      {
+        return SizedBox(
+          height: amount,
+        );
+      }
+    default:
+      {
+        return SizedBox(
+          width: amount,
+        );
+      }
+  }
+}

@@ -4,25 +4,70 @@ import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// ================== LOGIN PAGE ==================
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<StatefulWidget> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // retrieves inputs
-  final TextEditingController loginControllerUsername = TextEditingController();
-  final TextEditingController loginControllerPassword = TextEditingController();
+  late TextEditingController _loginControllerUsername;
+  late TextEditingController _loginControllerPassword;
 
   final supabase = Supabase.instance.client;
 
+  Future<void> _loginUser(
+      BuildContext context, String username, String password) async {
+    try {
+      final response = await supabase
+          .from('users')
+          .select('username, password')
+          .eq('username', username)
+          .eq('password', password);
+
+      if (response.isEmpty) {
+        print('user does not exist in table, tell user to sign up');
+        if (context.mounted) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return const AlertDialog(
+                  title: Text(
+                    'Incorrect Username or Password',
+                    style: TextStyle(fontSize: paragraph, fontWeight: bold),
+                  ),
+                  content: Text(
+                    'The username or password you\'ve entered is incorrect. Please try again.',
+                    style: TextStyle(fontSize: paragraph),
+                  ),
+                );
+              });
+        }
+      } else {
+        print('user exists in table. navigating to products page');
+
+        if (context.mounted) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const ProductPage()));
+        }
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    _loginControllerUsername = TextEditingController();
+    _loginControllerPassword = TextEditingController();
+    super.initState();
+  }
+
   @override
   void dispose() {
-    loginControllerUsername.dispose();
-    loginControllerPassword.dispose();
+    _loginControllerUsername.dispose();
+    _loginControllerPassword.dispose();
     super.dispose();
   }
 
@@ -33,150 +78,124 @@ class _LoginPageState extends State<LoginPage> {
       body: SafeArea(
         child: Stack(
           children: <Widget>[
-            // ================== BACKGROUND IMAGE ==================
+            // ================= BACKGROUND IMAGE =================
             const Image(
               image: AssetImage(
-                  'lib/assets/eaters-collective-Gg5-K-mJwuQ-unsplash.jpg'),
+                  'lib/assets/onboarding_images/eaters-collective-Gg5-K-mJwuQ-unsplash.jpg'),
               width: double.infinity,
               height: double.infinity,
               fit: BoxFit.cover,
             ),
-            // ================== OVERLAY ==================
+            // ================= OVERLAY =================
             Container(
               width: double.infinity,
               height: double.infinity,
-              color: primaryOverlay,
+              color: primaryColourOverlay,
             ),
-            // ================== LOGIN FORM ==================
+            // ================= LOGIN FORM =================
             Center(
-              child: Container(
-                margin: primaryMarginAll,
-                padding: primaryPaddingAll * 2,
-                decoration: const BoxDecoration(
-                  borderRadius: primaryBorderRadius,
-                  color: primaryColourWhite,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // ================== login form header
-                    const Text(
-                      'Login',
-                      style: TextStyle(
-                        fontSize: headerOne,
-                        fontWeight: bold,
-                        color: primaryColourBlack,
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: addPadding('default', 16.00),
+                  margin: addMargin('default', 20.00),
+                  decoration: BoxDecoration(
+                    color: primaryColourYellow.withOpacity(0.8),
+                    borderRadius: addBorderRadius('default', 20.00),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // ================= login header =================
+                      const Text(
+                        'Login',
+                        style: TextStyle(
+                          fontSize: headerOne,
+                          color: primaryColourBlack,
+                          fontWeight: bold,
+                        ),
                       ),
-                    ),
-                    primarySizedBox,
-                    // ================== login form sub-header
-                    const Text(
-                      'Login to start ordering online.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: headerTwo - 8,
-                        color: primaryColourBlack,
+                      // ================= login subheader =================
+                      const Text(
+                        'Login to start ordering.',
+                        style: TextStyle(
+                            fontSize: paragraph, color: primaryColourBlack),
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                    const SizedBox(height: primarySpacer * 4),
-                    // ================== login form - username input
-                    TextField(
-                      controller: loginControllerUsername,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Username',
-                        filled: true,
-                        fillColor: primaryColourWhite,
-                        labelStyle: TextStyle(fontSize: paragraph),
+                      addSpacer('height', 16.00),
+                      // ================= login username =================
+                      TextField(
+                        controller: _loginControllerUsername,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Username',
+                          filled: true,
+                          fillColor: primaryColourWhite,
+                          labelStyle: TextStyle(fontSize: paragraph),
+                        ),
                       ),
-                    ),
-                    primarySizedBox,
-                    primarySizedBox,
-                    // ================== login form - password input
-                    TextField(
-                      controller: loginControllerPassword,
-                      decoration: const InputDecoration(
+                      addSpacer('height', 16.00),
+                      // ================= login password =================
+                      TextField(
+                        controller: _loginControllerPassword,
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Password',
                           filled: true,
                           fillColor: primaryColourWhite,
-                          labelStyle: TextStyle(fontSize: paragraph)),
-                    ),
-                    primarySizedBox,
-                    primarySizedBox,
-                    // ================== submit button
-                    FilledButton(
-                      onPressed: () async {
-                        try {
-                          final response = await supabase
-                              .from('users')
-                              .select('*')
-                              .eq('username', loginControllerUsername.text);
-
-                          // the user is not in the database
-                          if (response.isEmpty) {
-                            print('user does not exist, sign up');
-                          }
-                          // the user does exist, navigate to products page
-                          else {
-                            // return goToProductsPage();
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const ProductPage()));
-                          }
-                        } catch (e) {
-                          throw Exception('Error: $e');
-                        }
-                      },
-                      style: const ButtonStyle(
-                          backgroundColor:
-                              WidgetStatePropertyAll(primaryColourBlack),
-                          padding: WidgetStatePropertyAll(
-                              primaryPaddingAllWithIcon)),
-                      child: const Text(
-                        'Submit',
-                        style: TextStyle(fontSize: paragraph),
-                      ),
-                    ),
-                    primarySizedBox,
-                    // ================== create account link
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Don\'t have an account?',
-                          style: TextStyle(
-                            color: primaryColourBlack,
-                            fontSize: paragraph,
-                          ),
+                          labelStyle: TextStyle(fontSize: paragraph),
                         ),
-                        primarySizedBoxWidth,
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const SignUpPage()));
-                          },
-                          style: const ButtonStyle(
-                            padding: WidgetStatePropertyAll(EdgeInsets.all(0)),
-                          ),
-                          child: const Text(
-                            'Sign up',
-                            style: TextStyle(
-                              color: primaryColourBlack,
-                              fontSize: paragraph,
-                              decoration: TextDecoration.underline,
+                      ),
+                      addSpacer('height', 16.00),
+                      // ================= login submit button =================
+                      FilledButton(
+                        onPressed: () {
+                          _loginUser(context, _loginControllerUsername.text,
+                              _loginControllerPassword.text);
+                        },
+                        style: ButtonStyle(
+                          backgroundColor:
+                              WidgetStateProperty.all(primaryColourBlue),
+                        ),
+                        child: const Text(
+                          'Submit',
+                          style:
+                              TextStyle(fontSize: paragraph, fontStyle: italic),
+                        ),
+                      ),
+                      addSpacer('height', 5.00),
+                      // ================= navigate to sign up page =================
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Don\'t have an account?'),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SignUpPage()));
+                            },
+                            style: ButtonStyle(
+                              padding: WidgetStatePropertyAll(
+                                  addPadding('default', 0)),
+                              backgroundColor: const WidgetStatePropertyAll(
+                                  primaryColourTransparent),
+                            ),
+                            child: const Text(
+                              'Sign Up',
+                              style: TextStyle(
+                                  color: primaryColourBlack,
+                                  decoration: underline),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),

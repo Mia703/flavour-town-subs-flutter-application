@@ -23,5 +23,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - lib/assets/
-    - lib/db/product_images/
+    - lib/assets/onboarding_images/
+    - lib/assets/product_images/
