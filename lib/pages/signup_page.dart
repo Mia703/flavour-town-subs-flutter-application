@@ -1,3 +1,4 @@
+import 'package:flavour_town_subs_flutter_application/main.dart';
 import 'package:flavour_town_subs_flutter_application/pages/login_page.dart';
 import 'package:flavour_town_subs_flutter_application/pages/product_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
@@ -65,8 +66,15 @@ class _SignUpPageState extends State<SignUpPage> {
                 });
           }
         } else {
-          print('data insertion was successful. navigate to products page');
+          print('data insertion was successful');
 
+          print('update global user object');
+          currentUser.setFirstName(firstName);
+          currentUser.setLastName(lastName);
+          currentUser.setUsername(username);
+          currentUser.setPassword(password);
+
+          print('navigate to products page');
           if (context.mounted) {
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => const ProductPage()));

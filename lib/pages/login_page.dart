@@ -1,3 +1,4 @@
+import 'package:flavour_town_subs_flutter_application/main.dart';
 import 'package:flavour_town_subs_flutter_application/pages/product_page.dart';
 import 'package:flavour_town_subs_flutter_application/pages/signup_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
@@ -22,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final response = await supabase
           .from('users')
-          .select('username, password')
+          .select('*')
           .eq('username', username)
           .eq('password', password);
 
@@ -45,8 +46,14 @@ class _LoginPageState extends State<LoginPage> {
               });
         }
       } else {
-        print('user exists in table. navigating to products page');
+        print('user exists in table. updating global user object');
+        final data = response[0];
+        currentUser.setFirstName(data['firstname']);
+        currentUser.setLastName(data['lastname']);
+        currentUser.setUsername(data['username']);
+        currentUser.setPassword(data['password']);
 
+        print('navigating to products page');
         if (context.mounted) {
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const ProductPage()));

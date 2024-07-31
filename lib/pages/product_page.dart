@@ -38,7 +38,7 @@ class _ProductPageState extends State<ProductPage> {
                 margin: addMargin('default', 16.00),
                 padding: addPadding('tb', 6.00) + addPadding('lr', 5.00),
                 decoration: BoxDecoration(
-                  color: primaryColourDarkGrey,
+                  color: primaryColourYellow,
                   borderRadius: addBorderRadius('default', 2000.00),
                 ),
                 child: Row(
@@ -53,10 +53,13 @@ class _ProductPageState extends State<ProductPage> {
                           Icon(
                             Icons.fastfood,
                             size: headerTwo,
+                            color: primaryColourBlack,
                           ),
                           Text(
                             'Menu',
-                            style: TextStyle(fontSize: paragraph - 5),
+                            style: TextStyle(
+                                fontSize: paragraph - 5,
+                                color: primaryColourBlack),
                           ),
                         ],
                       ),
@@ -74,11 +77,14 @@ class _ProductPageState extends State<ProductPage> {
                             child: Icon(
                               Icons.shopping_bag,
                               size: headerTwo,
+                              color: primaryColourBlack,
                             ),
                           ),
                           Text(
                             'Cart',
-                            style: TextStyle(fontSize: paragraph - 5),
+                            style: TextStyle(
+                                fontSize: paragraph - 5,
+                                color: primaryColourBlack),
                           )
                         ],
                       ),
@@ -97,10 +103,13 @@ class _ProductPageState extends State<ProductPage> {
                           Icon(
                             Icons.account_circle,
                             size: headerTwo,
+                            color: primaryColourBlack,
                           ),
                           Text(
                             'Account',
-                            style: TextStyle(fontSize: paragraph - 5),
+                            style: TextStyle(
+                                fontSize: paragraph - 5,
+                                color: primaryColourBlack),
                           ),
                         ],
                       ),

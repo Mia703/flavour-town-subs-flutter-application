@@ -1,9 +1,13 @@
 import 'package:flavour_town_subs_flutter_application/database/api.dart';
 import 'package:flavour_town_subs_flutter_application/pages/home_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
+import 'package:flavour_town_subs_flutter_application/user.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+// gobal user object. udpates as user logs in and out
+CurrentUser currentUser = CurrentUser();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
