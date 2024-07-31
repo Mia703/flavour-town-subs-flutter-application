@@ -38,8 +38,9 @@ class _SignUpPageState extends State<SignUpPage> {
 
         // by default just .insert() doesn't return anything
         // adding select returns the inserted data on success?
+        var id = uuid.v1();
         final data = await supabase.from('users').insert({
-          'uuid': uuid.v1(),
+          'uuid': id,
           'firstname': firstName,
           'lastname': lastName,
           'username': username,
@@ -69,6 +70,7 @@ class _SignUpPageState extends State<SignUpPage> {
           print('data insertion was successful');
 
           print('update global user object');
+          currentUser.setUUID(id);
           currentUser.setFirstName(firstName);
           currentUser.setLastName(lastName);
           currentUser.setUsername(username);

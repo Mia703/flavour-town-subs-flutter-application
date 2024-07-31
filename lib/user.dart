@@ -1,10 +1,20 @@
 // A global user object that is updated as the user log
 
 class CurrentUser {
+  String uuid = '';
   String firstName = '';
   String lastName = '';
   String username = '';
   String password = '';
+  String avatarImage = '';
+
+  void setUUID(String id) {
+    uuid = id;
+  }
+
+  String getUUID() {
+    return uuid;
+  }
 
   void setFirstName(String name) {
     firstName = name;
@@ -36,6 +46,14 @@ class CurrentUser {
 
   String getPassword() {
     return password;
+  }
+
+  void setAvatarImage(String avatar) {
+    avatarImage = avatar;
+  }
+
+  String getAvatarImage() {
+    return avatarImage;
   }
 
   void clearData() {

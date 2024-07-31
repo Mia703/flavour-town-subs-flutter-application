@@ -1,3 +1,4 @@
+import 'package:flavour_town_subs_flutter_application/components/onboarding_orientation.dart';
 import 'package:flutter/material.dart';
 import 'package:flavour_town_subs_flutter_application/components/onboarding_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
@@ -46,6 +47,13 @@ class _HomePageState extends State<HomePage> {
                       'lib/assets/onboarding_images/pexels-efrem-efre-2786187-23203214.jpg',
                   hasButton: false,
                 ),
+                // OnboardingOrientation(
+                //   title: 'testpage',
+                //   description: 'test description',
+                //   imagePath:
+                //       'lib/assets/onboarding_images/pexels-efrem-efre-2786187-23203214.jpg',
+                //   hasButton: false,
+                // ),
                 OnboardingPage(
                   title: 'Easy Ordering',
                   description:

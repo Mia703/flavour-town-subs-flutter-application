@@ -48,6 +48,7 @@ class _LoginPageState extends State<LoginPage> {
       } else {
         print('user exists in table. updating global user object');
         final data = response[0];
+        currentUser.setUUID(data['uuid']);
         currentUser.setFirstName(data['firstname']);
         currentUser.setLastName(data['lastname']);
         currentUser.setUsername(data['username']);

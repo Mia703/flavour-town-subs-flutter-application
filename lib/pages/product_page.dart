@@ -46,7 +46,9 @@ class _ProductPageState extends State<ProductPage> {
                   children: [
                     // ================= MENU BUTTON
                     MaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ProductPage()));
+                      },
                       child: const Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [

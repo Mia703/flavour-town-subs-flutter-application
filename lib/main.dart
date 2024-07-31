@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flavour_town_subs_flutter_application/database/api.dart';
 import 'package:flavour_town_subs_flutter_application/pages/home_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
@@ -9,9 +10,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 // gobal user object. udpates as user logs in and out
 CurrentUser currentUser = CurrentUser();
 
+// returns the list of cameras available on the device
+late List<CameraDescription> cameras;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(url: supabaseURL, anonKey: supabaseKey);
+  cameras = await availableCameras();
   runApp(const MyApp());
 }
 
