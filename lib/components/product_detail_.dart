@@ -1,8 +1,8 @@
 import 'package:date_format/date_format.dart';
-import 'package:flavour_town_subs_flutter_application/order.dart';
-import 'package:flavour_town_subs_flutter_application/order_item.dart';
+import 'package:flavour_town_subs_flutter_application/global_objects/order.dart';
+import 'package:flavour_town_subs_flutter_application/global_objects/order_item.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
-import 'package:flavour_town_subs_flutter_application/user.dart';
+import 'package:flavour_town_subs_flutter_application/global_objects/user.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -32,6 +32,7 @@ Future<bool> _isInCart(Order currentOrder, int itemId) async {
   }
 }
 
+// updates the over all cart total
 Future<void> _updateOrderTotal(Order currentOrder) async {
   final response = await supabase
       .from('order_items')
@@ -63,6 +64,7 @@ Future<void> _updateOrderTotal(Order currentOrder) async {
   }
 }
 
+// sets the number of items in the cart
 Future<void> _updateOrderCount(Order currentOrder) async {
   final response = await supabase
       .from('order_items')
@@ -74,6 +76,7 @@ Future<void> _updateOrderCount(Order currentOrder) async {
   currentOrder.setOrderCount(count);
 }
 
+// adds the selected item to the cart
 Future<void> _addToCart(CurrentUser user, int productID, String name,
     String description, String price, String image) async {
   try {

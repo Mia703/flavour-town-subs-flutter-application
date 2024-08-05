@@ -1,4 +1,3 @@
-import 'package:flavour_town_subs_flutter_application/components/onboarding_orientation.dart';
 import 'package:flutter/material.dart';
 import 'package:flavour_town_subs_flutter_application/components/onboarding_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';

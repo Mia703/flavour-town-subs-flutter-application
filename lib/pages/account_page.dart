@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flavour_town_subs_flutter_application/pages/account_settings_page.dart';
-import 'package:flavour_town_subs_flutter_application/pages/order_history_page.dart';
+import 'package:flavour_town_subs_flutter_application/pages/history_page.dart';
 import 'package:flavour_town_subs_flutter_application/main.dart';
 import 'package:flavour_town_subs_flutter_application/pages/login_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
@@ -188,7 +188,7 @@ class _AccountPageState extends State<AccountPage> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (countext) =>
-                                          const OrderHistoryPage()));
+                                          const HistoryPage()));
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -20,7 +20,7 @@ class _ProductSliderState extends State<ProductSlider> {
 
   @override
   void initState() {
-    _productsList = _getProducts(widget.type);
+    _productsList = _getProductsByType(widget.type);
     super.initState();
   }
 
@@ -29,7 +29,7 @@ class _ProductSliderState extends State<ProductSlider> {
     super.dispose();
   }
 
-  Future<List<Map<String, dynamic>>> _getProducts(String type) async {
+  Future<List<Map<String, dynamic>>> _getProductsByType(String type) async {
     final response = await supabase
         .from('products')
         .select('*')
