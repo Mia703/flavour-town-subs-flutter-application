@@ -1,15 +1,18 @@
 import 'package:flavour_town_subs_flutter_application/components/product_detail_.dart';
+import 'package:flavour_town_subs_flutter_application/main.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
 
 class ProductButton extends StatelessWidget {
   const ProductButton(
       {super.key,
+      required this.id,
       required this.name,
       required this.description,
       required this.price,
       required this.image});
 
+  final int id;
   final String name;
   final String description;
   final String price;
@@ -20,8 +23,8 @@ class ProductButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // FIXME: after resizing images, make width smaller
-      width: 300.00,
+      // changes width of slider boxes
+      width: 280.00,
       margin: addMargin('lr', 8.00),
       child: OutlinedButton(
         // defines the style round the button
@@ -35,10 +38,10 @@ class ProductButton extends StatelessWidget {
           ),
           padding: addPadding('default', 10.00),
         ),
+        // displays product's details in pop-up widget
         onPressed: () {
-          // TODO: on click add to cart list
-          showProductDetailWidget(
-              context, name, description, '\$$price', '$imagePath$image');
+          showProductDetailWidget(context, currentUser, id, name, description,
+              price, '$imagePath$image');
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

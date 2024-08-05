@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// gobal user object. udpates as user logs in and out
+// global user object. updates as user logs in and out
 CurrentUser currentUser = CurrentUser();
 
 // returns the list of cameras available on the device

@@ -80,7 +80,8 @@ class _ProductSliderState extends State<ProductSlider> {
                   // ================= PRODUCT SLIDER CONTAINER
                   final List<Map<String, dynamic>> products = snapshot.data!;
                   return SizedBox(
-                    height: 350.00,
+                    // changes height of slider box
+                    height: 300.00,
                     width: double.infinity,
                     // ================= LIST VIEW
                     child: ListView.builder(
@@ -90,6 +91,7 @@ class _ProductSliderState extends State<ProductSlider> {
                         // ================= PRODUCT BUTTON
                         final product = snapshot.data![index];
                         return ProductButton(
+                          id: product['product_id'],
                           name: product['product_name'],
                           description: product['product_desc'],
                           price: '${product['product_price']}',

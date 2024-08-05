@@ -1,5 +1,7 @@
+import 'package:flavour_town_subs_flutter_application/components/product_detail_.dart';
 import 'package:flavour_town_subs_flutter_application/components/product_slider.dart';
 import 'package:flavour_town_subs_flutter_application/pages/account_page.dart';
+import 'package:flavour_town_subs_flutter_application/pages/cart_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +22,7 @@ class _ProductPageState extends State<ProductPage> {
             SingleChildScrollView(
               // ================= PRODUCT SLIDER CONTAINERS =================
               child: Container(
-                margin: addMargin('bottom', 65.00),
+                margin: addMargin('bottom', 75.00),
                 child: const Column(
                   children: <Widget>[
                     ProductSlider(header: 'Hot Subs', type: 'hot'),
@@ -47,7 +49,10 @@ class _ProductPageState extends State<ProductPage> {
                     // ================= MENU BUTTON
                     MaterialButton(
                       onPressed: () {
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ProductPage()));
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ProductPage()));
                       },
                       child: const Column(
                         mainAxisSize: MainAxisSize.min,
@@ -68,21 +73,26 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                     // ================= CART BUTTON
                     MaterialButton(
-                      onPressed: () {},
-                      child: const Column(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const CartPage()));
+                      },
+                      child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Badge(
-                            label: Text('0'),
+                            label: Text('${currentOrder.getOrderCount()}'),
                             backgroundColor: primaryColourRed,
                             textColor: primaryColourWhite,
-                            child: Icon(
+                            child: const Icon(
                               Icons.shopping_bag,
                               size: headerTwo,
                               color: primaryColourBlack,
                             ),
                           ),
-                          Text(
+                          const Text(
                             'Cart',
                             style: TextStyle(
                                 fontSize: paragraph - 5,

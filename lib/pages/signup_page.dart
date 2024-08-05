@@ -48,7 +48,7 @@ class _SignUpPageState extends State<SignUpPage> {
         }).select();
 
         if (data.isEmpty) {
-          print('data insertion was not successful');
+          print('signup: data insertion was not successful');
 
           if (context.mounted) {
             showDialog(
