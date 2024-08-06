@@ -1,4 +1,6 @@
+import 'package:flavour_town_subs_flutter_application/components/product_detail_.dart';
 import 'package:flavour_town_subs_flutter_application/main.dart';
+import 'package:flavour_town_subs_flutter_application/pages/product_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -22,7 +24,7 @@ class _CartPageState extends State<CartPage> {
       final response = await supabase
           .from('orders')
           .select(
-              'order_items(quantity, item_price), products(product_name, product_desc, product_price)')
+              'order_id, order_items(quantity, item_price), products(product_name, product_desc, product_price)')
           .eq('user_id', currentUser.getUUID())
           .eq('order_status', 'in-progress');
 
@@ -34,7 +36,7 @@ class _CartPageState extends State<CartPage> {
         print('user\'s cart is not empty');
 
         final data = response[0];
-
+        String orderId = data['order_id'];
         List<dynamic> orderItemsList = data['order_items'];
         List<dynamic> productsList = data['products'];
 
@@ -54,7 +56,7 @@ class _CartPageState extends State<CartPage> {
           };
           cartItemsList.add(cartItem);
         }
-        cartTotal = await _getCartTotal();
+        cartTotal = await _getCartTotal(orderId);
         return cartItemsList;
       }
     } catch (e) {
@@ -63,11 +65,13 @@ class _CartPageState extends State<CartPage> {
   }
 
   // returns the current order's total
-  Future<double> _getCartTotal() async {
+  Future<double> _getCartTotal(String orderId) async {
     final response = await supabase
         .from('orders')
         .select('order_total')
-        .eq('order_status', 'in-progress');
+        .eq('order_status', 'in-progress')
+        .eq('order_id', orderId)
+        .eq('user_id', currentUser.getUUID());
 
     if (response.isEmpty) {
       print('_getCartTotal: there is no current order, order total is empty');
@@ -75,6 +79,75 @@ class _CartPageState extends State<CartPage> {
     } else {
       print('_getCartTotal, there is a cart total');
       return response[0]['order_total'];
+    }
+  }
+
+  // conducts the check out process
+  // the in-progress order is marked as complete
+  Future<void> _checkOutCart(BuildContext context) async {
+    try {
+      final response = await supabase
+          .from('orders')
+          .update({'order_status': 'completed'})
+          .eq('user_id', currentUser.getUUID())
+          .select();
+
+      if (response.isEmpty) {
+        print('_checkOutCart, check out was not successful');
+        if (context.mounted) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return const AlertDialog(
+                  title: Text(
+                    'Check Out Not Successful',
+                    style: TextStyle(
+                      fontSize: paragraph,
+                      fontWeight: bold,
+                    ),
+                  ),
+                  content: Text(
+                    'Sorry, your check out was not successful. Pleas try again.',
+                    style: TextStyle(
+                      fontSize: paragraph,
+                      fontWeight: bold,
+                    ),
+                  ),
+                );
+              });
+        }
+      } else {
+        print('_checkOutCart, check out was successful');
+        if (context.mounted) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return const AlertDialog(
+                  title: Text(
+                    'Check Out Successful',
+                    style: TextStyle(
+                      fontSize: paragraph,
+                      fontWeight: bold,
+                    ),
+                  ),
+                  content: Text(
+                    'Your checkout was successful. Navigating back to menu page.',
+                    style: TextStyle(
+                      fontSize: paragraph,
+                      fontWeight: bold,
+                    ),
+                  ),
+                );
+              });
+
+          currentOrder.setOrderCount(0); // reset cart badge to 0
+          // navigate to product's page
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const ProductPage()));
+        }
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
     }
   }
 
@@ -121,7 +194,7 @@ class _CartPageState extends State<CartPage> {
                     );
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Center(
-                      child: Text('Error: There is no data'),
+                      child: Text('You have no items in the cart!'),
                     );
                   } else {
                     final List<Map<String, dynamic>> cartItemsList =
@@ -129,7 +202,7 @@ class _CartPageState extends State<CartPage> {
                     return ListView.builder(
                       itemCount: cartItemsList.length,
                       shrinkWrap: true,
-                      physics: ScrollPhysics(),
+                      physics: const ScrollPhysics(),
                       itemBuilder: (context, index) {
                         final cartItem = cartItemsList[index];
                         final double itemPrice =
@@ -138,8 +211,8 @@ class _CartPageState extends State<CartPage> {
                             itemPrice.toStringAsFixed(2);
                         // ================= CART ITEM CONTAINER =================
                         return Container(
-                          margin: addMargin('tb', 10.00) +
-                              addMargin('lr', 16.00),
+                          margin:
+                              addMargin('tb', 10.00) + addMargin('lr', 16.00),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -156,8 +229,7 @@ class _CartPageState extends State<CartPage> {
                               // ================= cart item description
                               Text(
                                 '${cartItem['product_desc']}.',
-                                style:
-                                    const TextStyle(fontSize: paragraph),
+                                style: const TextStyle(fontSize: paragraph),
                               ),
                               // ================= CART ITEM QUANTITY AND PRICE =================
                               Row(
@@ -193,7 +265,9 @@ class _CartPageState extends State<CartPage> {
               Padding(
                 padding: addPadding('tb', 16.00) + addPadding('lr', 10.00),
                 child: FilledButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _checkOutCart(context);
+                  },
                   style: const ButtonStyle(
                     backgroundColor:
                         WidgetStatePropertyAll(primaryColourYellow),

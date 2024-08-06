@@ -114,9 +114,6 @@ class _HistoryPageState extends State<HistoryPage> {
                           decoration: const BoxDecoration(
                             border: Border(
                               top: BorderSide(color: primaryColourBlack),
-                              bottom: BorderSide(
-                                color: primaryColourBlack,
-                              ),
                             ),
                           ),
                           child: Column(
