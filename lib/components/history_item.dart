@@ -108,7 +108,7 @@ class _HistoryItemState extends State<HistoryItem> {
                         Padding(
                           padding: addPadding('left', 30.00),
                           child: Text(
-                            '${item['quantity']} x ${item['item_price']} = ${item['order_price']}',
+                            '${item['quantity']} x \$${item['item_price']} = \$${item['order_price']}',
                             style: const TextStyle(fontSize: paragraph),
                           ),
                         ),
