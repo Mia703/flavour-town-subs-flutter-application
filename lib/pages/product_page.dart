@@ -1,6 +1,7 @@
 import 'package:flavour_town_subs_flutter_application/components/product_detail_.dart';
 import 'package:flavour_town_subs_flutter_application/components/product_slider.dart';
 import 'package:flavour_town_subs_flutter_application/pages/account_page.dart';
+import 'package:flavour_town_subs_flutter_application/pages/cart_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -73,10 +74,10 @@ class _ProductPageState extends State<ProductPage> {
                     // ================= CART BUTTON
                     MaterialButton(
                       onPressed: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => const CartPage()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const CartPage()));
                       },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,

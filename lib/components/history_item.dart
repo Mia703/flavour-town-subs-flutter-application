@@ -51,7 +51,6 @@ class _HistoryItemState extends State<HistoryItem> {
             itemsList.add(item);
           }
         }
-        print(itemsList);
         return itemsList;
       }
     } catch (e) {
@@ -98,21 +97,23 @@ class _HistoryItemState extends State<HistoryItem> {
               itemBuilder: (context, index) {
                 final item = itemsList[index];
                 return Container(
-                  margin: addMargin('lr', 16.00) + addMargin('tb', 5.00),
-                  child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item['item_name'],
-                      style: const TextStyle(fontSize: paragraph),
-                    ),
-                    Padding(
-                      padding: addPadding('left', 30.00),
-                      child: Text(
-                          '${item['quantity']} x ${item['item_price']} = ${item['order_price']}'),
-                    ),
-                  ],
-                ));
+                    margin: addMargin('lr', 16.00) + addMargin('tb', 5.00),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item['item_name'],
+                          style: const TextStyle(fontSize: paragraph),
+                        ),
+                        Padding(
+                          padding: addPadding('left', 30.00),
+                          child: Text(
+                            '${item['quantity']} x ${item['item_price']} = ${item['order_price']}',
+                            style: const TextStyle(fontSize: paragraph),
+                          ),
+                        ),
+                      ],
+                    ));
               },
             );
           }

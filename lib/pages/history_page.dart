@@ -107,7 +107,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     child: Column(
                       children: [
                         Container(
-                          margin: addMargin('tb', 16.00),
+                          margin: addMargin('bottom', 16.00),
                           padding:
                               addPadding('lr', 16.00) + addPadding('tb', 5.00),
                           width: double.infinity,
@@ -129,10 +129,13 @@ class _HistoryPageState extends State<HistoryPage> {
                                 style: const TextStyle(
                                   fontSize: headerThree,
                                   fontWeight: bold,
+                                  color: primaryColourBlue
                                 ),
                               ),
+                              addSpacer('height', 10.00),
                               // ================= ORDER HISTORY ITEMS
                               HistoryItem(orderId: history['order_id']),
+                              addSpacer('height', 10.00),
                               // ================= ORDER TOTAL CONTAINER
                               Row(
                                 mainAxisAlignment:
@@ -142,12 +145,13 @@ class _HistoryPageState extends State<HistoryPage> {
                                     'Total',
                                     style: TextStyle(
                                       fontSize: paragraph,
+                                      fontWeight: bold,
                                     ),
                                   ),
                                   // ================= ORDER TOTAL
                                   Text(
                                     '\$${history['order_total']}',
-                                    style: const TextStyle(fontSize: paragraph),
+                                    style: const TextStyle(fontSize: paragraph, fontWeight: bold),
                                   ),
                                 ],
                               ),
