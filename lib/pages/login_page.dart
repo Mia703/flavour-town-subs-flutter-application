@@ -1,5 +1,4 @@
-import 'package:flavour_town_subs_flutter_application/main.dart';
-import 'package:flavour_town_subs_flutter_application/pages/product_page.dart';
+import 'package:flavour_town_subs_flutter_application/database/supabase.dart';
 import 'package:flavour_town_subs_flutter_application/pages/signup_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
@@ -17,53 +16,6 @@ class _LoginPageState extends State<LoginPage> {
   late TextEditingController _loginControllerPassword;
 
   final supabase = Supabase.instance.client;
-
-  Future<void> _loginUser(
-      BuildContext context, String username, String password) async {
-    try {
-      final response = await supabase
-          .from('users')
-          .select('*')
-          .eq('username', username)
-          .eq('password', password);
-
-      if (response.isEmpty) {
-        print('user does not exist in table, tell user to sign up');
-        if (context.mounted) {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return const AlertDialog(
-                  title: Text(
-                    'Incorrect Username or Password',
-                    style: TextStyle(fontSize: paragraph, fontWeight: bold),
-                  ),
-                  content: Text(
-                    'The username or password you\'ve entered is incorrect. Please try again.',
-                    style: TextStyle(fontSize: paragraph),
-                  ),
-                );
-              });
-        }
-      } else {
-        print('user exists in table. updating global user object');
-        final data = response[0];
-        currentUser.setUUID(data['uuid']);
-        currentUser.setFirstName(data['firstname']);
-        currentUser.setLastName(data['lastname']);
-        currentUser.setUsername(data['username']);
-        currentUser.setPassword(data['password']);
-
-        print('navigating to products page');
-        if (context.mounted) {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const ProductPage()));
-        }
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
 
   @override
   void initState() {
@@ -157,7 +109,10 @@ class _LoginPageState extends State<LoginPage> {
                       // ================= login submit button =================
                       FilledButton(
                         onPressed: () {
-                          _loginUser(context, _loginControllerUsername.text,
+                          loginUser(
+                              supabase,
+                              context,
+                              _loginControllerUsername.text,
                               _loginControllerPassword.text);
                         },
                         style: ButtonStyle(

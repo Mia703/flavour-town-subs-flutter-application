@@ -1,5 +1,5 @@
-import 'package:flavour_town_subs_flutter_application/components/product_detail_.dart';
-import 'package:flavour_town_subs_flutter_application/components/product_slider.dart';
+import 'package:flavour_town_subs_flutter_application/components/product_page/product_detail_.dart';
+import 'package:flavour_town_subs_flutter_application/components/product_page/product_slider.dart';
 import 'package:flavour_town_subs_flutter_application/pages/account_page.dart';
 import 'package:flavour_town_subs_flutter_application/pages/cart_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';

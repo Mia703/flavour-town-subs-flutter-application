@@ -2,7 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flavour_town_subs_flutter_application/database/api.dart';
 import 'package:flavour_town_subs_flutter_application/pages/home_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
-import 'package:flavour_town_subs_flutter_application/global_objects/user.dart';
+import 'package:flavour_town_subs_flutter_application/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

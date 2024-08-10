@@ -1,8 +1,8 @@
 import 'package:date_format/date_format.dart';
-import 'package:flavour_town_subs_flutter_application/global_objects/order.dart';
-import 'package:flavour_town_subs_flutter_application/global_objects/order_item.dart';
+import 'package:flavour_town_subs_flutter_application/models/order.dart';
+import 'package:flavour_town_subs_flutter_application/models/order_item.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
-import 'package:flavour_town_subs_flutter_application/global_objects/user.dart';
+import 'package:flavour_town_subs_flutter_application/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';

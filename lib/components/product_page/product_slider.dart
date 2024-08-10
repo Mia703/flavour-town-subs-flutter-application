@@ -1,4 +1,4 @@
-import 'package:flavour_town_subs_flutter_application/components/product_button.dart';
+import 'package:flavour_town_subs_flutter_application/components/product_page/product_button.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
