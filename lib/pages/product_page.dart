@@ -1,9 +1,11 @@
-import 'package:flavour_town_subs_flutter_application/components/product_page/product_detail_.dart';
 import 'package:flavour_town_subs_flutter_application/components/product_page/product_slider.dart';
+import 'package:flavour_town_subs_flutter_application/database/supabase.dart';
+import 'package:flavour_town_subs_flutter_application/main.dart';
 import 'package:flavour_town_subs_flutter_application/pages/account_page.dart';
 import 'package:flavour_town_subs_flutter_application/pages/cart_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key});
@@ -13,6 +15,15 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
+  late Future<int> _cartItemsTotal;
+
+  final supabase = Supabase.instance.client;
+  @override
+  void initState() {
+    _cartItemsTotal = getCartItems(supabase, currentOrder.getOrderId());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,8 +93,24 @@ class _ProductPageState extends State<ProductPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          FutureBuilder(
+                            future: _cartItemsTotal,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Text('0');
+                              } else if (snapshot.hasError) {
+                                return const Text('0');
+                              } else if (!snapshot.hasData) {
+                                return const Text('0');
+                              } else {
+                                final int number = snapshot.data as int;
+                                return Text('Test: $number');
+                              }
+                            },
+                          ),
                           Badge(
-                            label: Text('${currentOrder.getOrderCount()}'),
+                            label: Text('0'),
                             backgroundColor: primaryColourRed,
                             textColor: primaryColourWhite,
                             child: const Icon(

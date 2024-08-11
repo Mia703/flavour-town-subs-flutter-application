@@ -1,4 +1,3 @@
-import 'package:flavour_town_subs_flutter_application/components/product_page/product_detail_.dart';
 import 'package:flavour_town_subs_flutter_application/main.dart';
 import 'package:flavour_town_subs_flutter_application/pages/product_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
@@ -140,7 +139,6 @@ class _CartPageState extends State<CartPage> {
                 );
               });
 
-          currentOrder.setOrderCount(0); // reset cart badge to 0
           // navigate to product's page
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const ProductPage()));

@@ -48,14 +48,10 @@ class ProductButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // ================= IMAGE CONTAINER =================
-            Container(
-              // TODO: remove or keep?
-              // color: primaryColourLightGrey,
-              child: Image(
-                image: AssetImage('$imagePath$image'),
-                alignment: Alignment.center,
-                fit: BoxFit.contain,
-              ),
+            Image(
+              image: AssetImage('$imagePath$image'),
+              alignment: Alignment.center,
+              fit: BoxFit.contain,
             ),
             addSpacer('height', 10.00),
             // ================= PRODUCT NAME & PRICE CONTAINER =================

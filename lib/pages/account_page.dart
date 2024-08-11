@@ -30,7 +30,7 @@ class _AccountPageState extends State<AccountPage> {
       if (response.isEmpty) {
         print('the user\'s image does not exist in the table');
 
-        final data = await supabase
+        await supabase
             .from('avatars')
             .insert({'avatars': imagePath})
             .eq('uuid', uuid)
@@ -38,7 +38,7 @@ class _AccountPageState extends State<AccountPage> {
       } else {
         print('the user\'s image does exist in the table.');
 
-        final data = await supabase
+        await supabase
             .from('avatars')
             .update({'avatars': imagePath})
             .eq('uuid', uuid)

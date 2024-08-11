@@ -1,4 +1,5 @@
 import 'package:flavour_town_subs_flutter_application/components/product_page/product_button.dart';
+import 'package:flavour_town_subs_flutter_application/database/supabase.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -20,27 +21,13 @@ class _ProductSliderState extends State<ProductSlider> {
 
   @override
   void initState() {
-    _productsList = _getProductsByType(widget.type);
+    _productsList = getProductsByType(supabase, widget.type);
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
-  }
-
-  Future<List<Map<String, dynamic>>> _getProductsByType(String type) async {
-    final response = await supabase
-        .from('products')
-        .select('*')
-        .eq('product_type', type)
-        .order('product_name', ascending: true);
-
-    if (response.isEmpty) {
-      throw Exception('Error: Data is empty');
-    } else {
-      return response;
-    }
   }
 
   @override
