@@ -1,7 +1,6 @@
 import 'package:flavour_town_subs_flutter_application/components/account_input.dart';
 import 'package:flavour_town_subs_flutter_application/main.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AccountSettingsPage extends StatefulWidget {

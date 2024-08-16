@@ -55,4 +55,12 @@ class Order {
   double getOrderTotal() {
     return orderTotal;
   }
+
+  void clearOrder() {
+    orderId = '';
+    orderDate = '';
+    orderTime = '';
+    orderStatus = '';
+    orderTotal = 0.00;
+  }
 }

@@ -3,6 +3,8 @@ import 'package:date_format/date_format.dart';
 import 'package:flavour_town_subs_flutter_application/components/alertDialoge.dart';
 import 'package:flavour_town_subs_flutter_application/main.dart';
 import 'package:flavour_town_subs_flutter_application/models/currentUser.dart';
+import 'package:flavour_town_subs_flutter_application/models/order.dart';
+import 'package:flavour_town_subs_flutter_application/pages/login_page.dart';
 import 'package:flavour_town_subs_flutter_application/pages/product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -10,6 +12,8 @@ import 'package:uuid/uuid.dart';
 
 const uuid = Uuid();
 final DateTime today = DateTime.now();
+
+// ================= AUTH FUNCTIONS =================
 
 Future<void> loginUser(SupabaseClient supabase, BuildContext context,
     String username, String password) async {
@@ -30,7 +34,9 @@ Future<void> loginUser(SupabaseClient supabase, BuildContext context,
         currentUser.setLastName(data['lastname']);
         currentUser.setUsername(data['username']);
         currentUser.setPassword(data['password']);
-        currentUser.setAvatarImage('image_path');
+        currentUser.setAvatarImage(data['image_path'] ?? '');
+
+        await getInProgressOrder(supabase, currentUser);
 
         log('loginUser: navigating to products page');
         if (context.mounted) {
@@ -108,6 +114,45 @@ Future<void> signUpUser(SupabaseClient supabase, BuildContext context,
   }
 }
 
+void signOutUser(BuildContext context, CurrentUser user, Order order) {
+  log('signing out user; cleared order and user information');
+  order.clearOrder();
+  user.clearData();
+  Navigator.pushReplacement(
+      context, MaterialPageRoute(builder: (context) => const LoginPage()));
+}
+
+Future<bool> deleteUser(SupabaseClient supabase, BuildContext context,
+    CurrentUser user, Order order) async {
+  try {
+    log('deleteUser: delete user\'s orders, even if user has no orders');
+    await supabase
+        .from('orders')
+        .delete()
+        .eq('user_id', user.getUUID())
+        .select();
+
+    final userData = await supabase
+        .from('users')
+        .delete()
+        .eq('uuid', user.getUUID())
+        .select();
+
+    if (userData.isNotEmpty) {
+      log('deleteUser: successfully deleted user');
+      order.clearOrder();
+      user.clearData();
+      return true;
+    } else {
+      log('deleteUser: could not delete user');
+      return false;
+    }
+  } catch (e) {
+    log('deleteUser Error: $e');
+    throw Exception('deleteUser Error: $e');
+  }
+}
+
 // ================= PRODUCT PAGE =================
 
 // returns the list of products by type, ordered by product name
@@ -132,6 +177,7 @@ Future<List<Map<String, dynamic>>> getProductsByType(
   }
 }
 
+// returns true if the user has an in-progress order
 Future<bool> getInProgressOrder(
     SupabaseClient supabase, CurrentUser user) async {
   try {
@@ -153,7 +199,6 @@ Future<bool> getInProgressOrder(
       return true;
     } else {
       log('getInProgressOrder: the user does not have an in-progress order. inserting order');
-      await createOrder(supabase, user);
       return false;
     }
   } catch (e) {
@@ -162,6 +207,7 @@ Future<bool> getInProgressOrder(
   }
 }
 
+// creates a new order, updates the Order object
 Future<void> createOrder(SupabaseClient supabase, CurrentUser user) async {
   try {
     String orderId = uuid.v1();
@@ -194,6 +240,8 @@ Future<void> createOrder(SupabaseClient supabase, CurrentUser user) async {
   }
 }
 
+// updates the quantity of an order-item or inserts the item into the order
+// updates the order total afterwards
 Future<void> getOrderItem(SupabaseClient supabase, CurrentUser user,
     String orderId, int productId, double productPrice) async {
   try {
@@ -217,6 +265,7 @@ Future<void> getOrderItem(SupabaseClient supabase, CurrentUser user,
   }
 }
 
+// inserts an order-item into the table
 Future<void> insertOrderItem(SupabaseClient supabase, String orderId,
     int productId, int quantity, double itemPrice) async {
   try {
@@ -238,6 +287,7 @@ Future<void> insertOrderItem(SupabaseClient supabase, String orderId,
   }
 }
 
+// increases an order-item's quantity
 Future<void> incrementQuantity(
     SupabaseClient supabase, String orderId, int productId) async {
   try {
@@ -280,6 +330,7 @@ Future<void> incrementQuantity(
   }
 }
 
+// updates an order's total
 Future<void> updateOrderTotal(
     SupabaseClient supabase, CurrentUser user, String orderId) async {
   try {
@@ -323,7 +374,9 @@ Future<void> addToCart(SupabaseClient supabase, BuildContext context,
     CurrentUser user, int productId, double productPrice) async {
   try {
     // updates or inserts order
-    await getInProgressOrder(supabase, user);
+    if (!await getInProgressOrder(supabase, user)) {
+      await createOrder(supabase, user);
+    }
     // updates or inserts order item
     await getOrderItem(
         supabase, user, currentOrder.getOrderId(), productId, productPrice);
@@ -333,26 +386,329 @@ Future<void> addToCart(SupabaseClient supabase, BuildContext context,
   }
 }
 
-Future<int> getCartItems(SupabaseClient supabase, String orderId) async {
+// returns the number of items in an order
+Future<int> countCartItems(SupabaseClient supabase, String orderId) async {
   try {
-    final response = await supabase
-        .from('order_items')
-        .select('quantity')
-        .eq('order_id', orderId);
+    if (orderId != '') {
+      final response = await supabase
+          .from('order_items')
+          .select('quantity')
+          .eq('order_id', orderId);
 
-    if (response.isNotEmpty) {
-      log('getCartItems: order has order items, returning cart items total');
-      int totalQuantity = 0;
-      for (int i = 0; i < response.length; i++) {
-        totalQuantity += response[i]['quantity'] as int;
+      if (response.isNotEmpty) {
+        // log('countCartItems: order has order items, returning cart items total');
+        int totalQuantity = 0;
+        for (int i = 0; i < response.length; i++) {
+          totalQuantity += response[i]['quantity'] as int;
+        }
+        return totalQuantity;
+      } else {
+        log('getCarItems: order has no order items, returning 0 for cart items total');
+        return 0;
       }
-      return totalQuantity;
     } else {
-      log('getCarItems: order has no order items, returning 0 for cart items total');
+      // log('countCartItems: orderId is empty. Meaning cart is empty after checkout or no create order triggered yet.');
+      // log('countCartItems: returning 0');
       return 0;
     }
   } catch (e) {
-    log('getCartItems Error: $e');
+    log('countCartItems Error: $e');
     throw Exception('getCart Items Error: $e');
+  }
+}
+
+// ================= CART PAGE =================
+
+// returns the list of items in the cart
+Future<List<Map<String, dynamic>>> getCartItems(
+    SupabaseClient supabase, CurrentUser user, String orderId) async {
+  try {
+    final response = await supabase
+        .from('orders')
+        .select(
+            'order_id, order_items(quantity, item_price), products(product_name, product_desc, product_price)')
+        .eq('user_id', user.getUUID())
+        .eq('order_status', 'in-progress');
+
+    List<Map<String, dynamic>> cartItemsList = [];
+    if (response.isNotEmpty) {
+      log('getCartItems: user\'s cart is not empty. fetching cart items');
+
+      final data = response[0];
+      List<dynamic> orderItemsList = data['order_items'];
+      List<dynamic> productsList = data['products'];
+
+      for (var i = 0; i < orderItemsList.length; i++) {
+        int quantity = orderItemsList[i]['quantity'];
+        double itemPrice = orderItemsList[i]['item_price'];
+        String productName = productsList[i]['product_name'];
+        String productDesc = productsList[i]['product_desc'];
+        double productPrice = productsList[i]['product_price'];
+
+        Map<String, dynamic> cartItem = {
+          'quantity': quantity,
+          'item_price': itemPrice,
+          'product_name': productName,
+          'product_desc': productDesc,
+          'product_price': productPrice,
+        };
+        cartItemsList.add(cartItem);
+      }
+      return cartItemsList;
+    } else {
+      log('getCartItems: the user\'s cart is empty');
+      return cartItemsList;
+    }
+  } catch (e) {
+    log('getCartItems Error: $e');
+    throw Exception('getCartItems Error: $e');
+  }
+}
+
+// TODO: deletes an item from the cart... do I have to do this? :(
+Future<void> deleteCartItem() async {}
+
+Future<double> getCartTotal(
+    SupabaseClient supabase, CurrentUser user, String orderId) async {
+  try {
+    final response = await supabase
+        .from('orders')
+        .select('order_total')
+        .eq('order_status', 'in-progress')
+        .eq('user_id', user.getUUID())
+        .eq('order_id', orderId);
+
+    if (response.isNotEmpty) {
+      // log('getCartTotal: returning the total cart price');
+      return response[0]['order_total'];
+    } else {
+      log('getCartTotal: there is no current order or cart is empty');
+      return 0;
+    }
+  } catch (e) {
+    log('getCartTotal Error: $e');
+    throw Exception('getCartTotal Error: $e');
+  }
+}
+
+Future<void> checkout(SupabaseClient supabase, BuildContext context,
+    CurrentUser user, Order order) async {
+  try {
+    final response = await supabase
+        .from('orders')
+        .update({
+          'order_status': 'completed',
+        })
+        .eq('user_id', user.getUUID())
+        .eq('order_id', order.getOrderId())
+        .eq('order_status', 'in-progress')
+        .select();
+    if (response.isNotEmpty) {
+      log('checkout: check out successful');
+
+      order.clearOrder();
+
+      if (context.mounted) {
+        displayAlertDialog(
+            context, 'Checkout Successful', 'Your checkout was successful.');
+
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const ProductPage()));
+      }
+    } else {
+      log('checkout: checkout unsuccessful');
+      if (context.mounted) {
+        displayAlertDialog(context, 'Checkout UnSuccessful',
+            'Sorry, it seems your checkout was not successful. Please try again.');
+      }
+    }
+  } catch (e) {
+    log('checkout Error: $e');
+    throw Exception('checkout Error: $e');
+  }
+}
+
+// ================= ORDER HISTORY PAGE =================
+
+// returns a list with the user's previous orders
+Future<List<Map<String, dynamic>>> getHistory(
+    SupabaseClient supabase, CurrentUser user) async {
+  try {
+    final response = await supabase
+        .from('orders')
+        .select('order_id, order_date, order_total')
+        .eq('order_status', 'completed')
+        .eq('user_id', user.getUUID())
+        .order('order_date', ascending: true)
+        .order('order_time', ascending: false);
+
+    List<Map<String, dynamic>> historyList = [];
+    if (response.isNotEmpty) {
+      log('getHistory: there is one or more completed orders for this user');
+
+      for (var i = 0; i < response.length; i++) {
+        String orderId = response[i]['order_id'];
+        String date = response[i]['order_date'];
+        double orderTotal = response[i]['order_total'];
+
+        // saves the order information in an object
+        Map<String, dynamic> historyItem = {
+          'order_id': orderId,
+          'order_date': date,
+          'order_total': orderTotal,
+        };
+
+        // save the object
+        historyList.add(historyItem);
+      }
+
+      return historyList;
+    } else {
+      log('getHistory: there are no completed orders for this user');
+      return historyList;
+    }
+  } catch (e) {
+    log('getHistory Error: $e');
+    throw Exception('getHistory Error: $e');
+  }
+}
+
+// delete all completed orders
+Future<void> deleteOrderHistory(
+    SupabaseClient supabase, BuildContext context, CurrentUser user) async {
+  try {
+    final response = await supabase
+        .from('orders')
+        .delete()
+        .eq('user_id', user.getUUID())
+        .eq('order_status', 'completed')
+        .select();
+    if (response.isNotEmpty) {
+      log('deleteOrderHistory: successfully deleted order history');
+      if (context.mounted) {
+        displayAlertDialog(context, 'Order History Deleted',
+            'Your order history was successfully deleted.');
+      }
+    } else {
+      log('deleteOrderHistory: order history unsuccessfully deleted');
+      if (context.mounted) {
+        displayAlertDialog(context, 'Order History Not Deleted',
+            'Sorry, your order history was unsuccessfully deleted. Please try again.');
+      }
+    }
+  } catch (e) {
+    log('deleteOrderHistory Error: $e');
+    throw Exception('deleteOrderHistory Error: $e');
+  }
+}
+
+// returns the list of order items from a specified order
+Future<List<Map<String, dynamic>>> getHistoryItems(
+    SupabaseClient supabase, String orderId) async {
+  try {
+    final response = await supabase
+        .from('orders')
+        .select(
+            'order_items(quantity, item_price), products(product_name, product_price)')
+        .eq('order_id', orderId);
+
+    List<Map<String, dynamic>> itemsList = [];
+    if (response.isEmpty) {
+      log('getHistoryItems: there are no order items for this order');
+      return itemsList;
+    } else {
+      log('getHistoryItems: there are order items for this order. getting the items');
+      for (var i = 0; i < response.length; i++) {
+        var orderItemsList = response[i]['order_items'];
+        var productsList = response[i]['products'];
+
+        for (var j = 0; j < orderItemsList.length; j++) {
+          int quantity = orderItemsList[j]['quantity'];
+          double orderPrice = orderItemsList[j]['item_price'];
+          String name = productsList[j]['product_name'];
+          double productPrice = productsList[j]['product_price'];
+
+          var item = {
+            'quantity': quantity,
+            'order_price': orderPrice.toStringAsFixed(2),
+            'item_name': name,
+            'item_price': productPrice.toStringAsFixed(2),
+          };
+
+          itemsList.add(item);
+        }
+      }
+      return itemsList;
+    }
+  } catch (e) {
+    log('getHistoryItems Error: $e');
+    throw Exception('getHistoryItems Error: $e');
+  }
+}
+
+// ================= ACCOUNT PAGE =================
+
+// saves the user's selected image to the table
+Future<bool> saveUserAvatar(
+    SupabaseClient supabase, CurrentUser user, String imagePath) async {
+  try {
+    final response = await supabase
+        .from('users')
+        .update({'image_path': imagePath})
+        .eq('uuid', user.getUUID())
+        .select();
+
+    if (response.isNotEmpty) {
+      log('saveUserAvatar: user\'s avatar was successfully saved');
+      user.setAvatarImage(imagePath);
+      return true;
+    } else {
+      log('saveUserAvatar: user\'s avatar was not successfully saved');
+      return false;
+    }
+  } catch (e) {
+    log('saveUserAvatar Error: $e');
+    throw Exception('saveUserAvatar Error: $e');
+  }
+}
+
+// changes user's user name or password
+Future<void> changeAccountInfo(SupabaseClient supabase, BuildContext context,
+    String column, String newValue) async {
+  try {
+    log('changeAccountInfo: insert new data into table: $column and $newValue');
+
+    final response = await supabase
+        .from('users')
+        .update({
+          column: newValue,
+        })
+        .eq('firstname', currentUser.getFirstName())
+        .eq('lastname', currentUser.getLastName())
+        .eq('password', currentUser.getPassword())
+        .select();
+
+    if (response.isNotEmpty) {
+      log('changeAccountInfo: new data insertion was successful. updating user object');
+      if (column == 'username') {
+        currentUser.setUsername(newValue);
+      } else {
+        currentUser.setPassword(newValue);
+      }
+
+      if (context.mounted) {
+        displayAlertDialog(
+            context, 'Changed $column', 'Successfully changed $column');
+      }
+    } else {
+      log('changeAccountInfo: new data insertion was not successful');
+      if (context.mounted) {
+        displayAlertDialog(context, 'Sorry!',
+            'It looks like your $column was not successful. Please try again.');
+      }
+    }
+  } catch (e) {
+    log('changeAccountInfo Error: $e');
+    throw Exception('changeAccountInfo Error: $e');
   }
 }

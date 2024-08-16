@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flavour_town_subs_flutter_application/components/product_page/product_slider.dart';
 import 'package:flavour_town_subs_flutter_application/database/supabase.dart';
 import 'package:flavour_town_subs_flutter_application/main.dart';
@@ -15,13 +17,33 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  late Future<int> _cartItemsTotal;
+  int totalCartItems = 0;
+  Timer? _timer;
 
   final supabase = Supabase.instance.client;
+
   @override
   void initState() {
-    _cartItemsTotal = getCartItems(supabase, currentOrder.getOrderId());
+    // debouncing = a technique used to limit the rate at which a function is executed
+    // calls the countCartItems function every 2 seconds
+    // function auto returns 0, if orderId is empty
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 2), (Timer timer) async {
+      int fetchedItems =
+          await countCartItems(supabase, currentOrder.getOrderId());
+
+      setState(() {
+        totalCartItems = fetchedItems;
+      });
+    });
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -93,24 +115,8 @@ class _ProductPageState extends State<ProductPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          FutureBuilder(
-                            future: _cartItemsTotal,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Text('0');
-                              } else if (snapshot.hasError) {
-                                return const Text('0');
-                              } else if (!snapshot.hasData) {
-                                return const Text('0');
-                              } else {
-                                final int number = snapshot.data as int;
-                                return Text('Test: $number');
-                              }
-                            },
-                          ),
                           Badge(
-                            label: Text('0'),
+                            label: Text('$totalCartItems'),
                             backgroundColor: primaryColourRed,
                             textColor: primaryColourWhite,
                             child: const Icon(

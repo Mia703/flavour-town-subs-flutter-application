@@ -1,9 +1,7 @@
-import 'package:flavour_town_subs_flutter_application/main.dart';
+import 'package:flavour_town_subs_flutter_application/database/supabase.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-// TODO: (later) check to see if you can keep just one TextEditingController
 
 class AccountInput extends StatefulWidget {
   const AccountInput({
@@ -27,67 +25,7 @@ class _AccountInputState extends State<AccountInput> {
 
   final supabase = Supabase.instance.client;
 
-  Future<void> _changeAccountInfo(
-      BuildContext context, String column, String newValue) async {
-    try {
-      print('insert new data into table: $column and $newValue');
-
-      final response = await supabase
-          .from('users')
-          .update({
-            column: newValue,
-          })
-          .eq('firstname', currentUser.getFirstName())
-          .eq('lastname', currentUser.getLastName())
-          .eq('password', currentUser.getPassword())
-          .select();
-
-      if (response.isEmpty) {
-        print('new data insertion was not successful');
-        if (context.mounted) {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text(
-                    'Sorry!',
-                    style: TextStyle(fontSize: paragraph, fontWeight: bold),
-                  ),
-                  content: Text(
-                    'It looks like your $column was not successful. Please try again.',
-                    style: const TextStyle(fontSize: paragraph),
-                  ),
-                );
-              });
-        }
-      } else {
-        print('new data insertion was successful');
-
-        print('update global user object');
-        if (column == 'username') {
-          currentUser.setUsername(newValue);
-        } else {
-          currentUser.setPassword(newValue);
-        }
-
-        if (context.mounted) {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  content: Text(
-                    'Your $column has successfully changed.',
-                    style: const TextStyle(fontSize: paragraph),
-                  ),
-                );
-              });
-        }
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
-
+  
   @override
   void initState() {
     _accountInputControllerUsername = TextEditingController();
@@ -136,10 +74,10 @@ class _AccountInputState extends State<AccountInput> {
                 FilledButton(
                   onPressed: () {
                     if (widget.column == 'username') {
-                      _changeAccountInfo(context, widget.column,
+                      changeAccountInfo(supabase, context, widget.column,
                           _accountInputControllerUsername.text);
                     } else {
-                      _changeAccountInfo(context, widget.column,
+                      changeAccountInfo(supabase, context, widget.column,
                           _accountInputControllerPassword.text);
                     }
                   },

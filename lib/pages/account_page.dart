@@ -1,8 +1,9 @@
 import 'dart:io';
+import 'package:flavour_town_subs_flutter_application/components/alertDialoge.dart';
+import 'package:flavour_town_subs_flutter_application/database/supabase.dart';
 import 'package:flavour_town_subs_flutter_application/pages/account_settings_page.dart';
 import 'package:flavour_town_subs_flutter_application/pages/history_page.dart';
 import 'package:flavour_town_subs_flutter_application/main.dart';
-import 'package:flavour_town_subs_flutter_application/pages/login_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,36 +19,9 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   late TextEditingController _accountUsernameChange;
   late TextEditingController _accountPasswordChange;
-  File? _imageFile;
+  String imagePath = currentUser.getAvatarImage();
 
   final supabase = Supabase.instance.client;
-
-  Future<void> _saveAvatarImage(String uuid, String imagePath) async {
-    try {
-      final response =
-          await supabase.from('avatars').select('*').eq('uuid', uuid);
-
-      if (response.isEmpty) {
-        print('the user\'s image does not exist in the table');
-
-        await supabase
-            .from('avatars')
-            .insert({'avatars': imagePath})
-            .eq('uuid', uuid)
-            .select();
-      } else {
-        print('the user\'s image does exist in the table.');
-
-        await supabase
-            .from('avatars')
-            .update({'avatars': imagePath})
-            .eq('uuid', uuid)
-            .select();
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
 
   @override
   void initState() {
@@ -63,8 +37,6 @@ class _AccountPageState extends State<AccountPage> {
     super.dispose();
   }
 
-  Future<void> _getAvatarImage() async {}
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,15 +51,12 @@ class _AccountPageState extends State<AccountPage> {
                 children: [
                   // ================= ACCOUNT USER AVATAR CONTAINER =================
                   Stack(
-                    alignment: Alignment.center,
                     children: [
-                      // TODO: make it so that the material button doesn't disappear
-                      // TODO; also make the image persistent
                       CircleAvatar(
                         backgroundColor: primaryColourLightGrey,
-                        radius: 55.00,
+                        radius: 55.0,
                         backgroundImage:
-                            _imageFile != null ? FileImage(_imageFile!) : null,
+                            imagePath != '' ? FileImage(File(imagePath)) : null,
                       ),
                       Positioned(
                         bottom: -5,
@@ -100,15 +69,24 @@ class _AccountPageState extends State<AccountPage> {
                                 .pickImage(source: ImageSource.gallery);
 
                             if (pickedImage != null) {
-                              setState(() {
-                                print(
-                                    'save the selected image to the database');
-                                // _saveAvatarImage(
-                                //     currentUser.getUUID(), pickedImage.path);
+                              // save the user's image
+                              bool success = await saveUserAvatar(
+                                  supabase, currentUser, pickedImage.path);
 
-                                print('display the selected image');
-                                _imageFile = File(pickedImage.path);
-                              });
+                              // if successful, update the avatar display
+                              if (success) {
+                                setState(() {
+                                  imagePath = currentUser.getAvatarImage();
+                                });
+                              } else {
+                                // else display Alert message
+                                if (context.mounted) {
+                                  displayAlertDialog(
+                                      context,
+                                      'Avatar Not Saved',
+                                      'Sorry, it seems like your image was not saved. Please try again.');
+                                }
+                              }
                             }
                           },
                           shape: const CircleBorder(
@@ -187,7 +165,7 @@ class _AccountPageState extends State<AccountPage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (countext) =>
+                                      builder: (context) =>
                                           const HistoryPage()));
                             },
                             child: Row(
@@ -220,44 +198,117 @@ class _AccountPageState extends State<AccountPage> {
                 ],
               ),
             ),
-            // ================= SIGN OUT BUTTON
             Align(
               alignment: Alignment.bottomRight,
               child: Flexible(
                 fit: FlexFit.loose,
                 child: Align(
                   alignment: Alignment.bottomRight,
-                  child: Container(
-                    margin: addMargin('default', 3.00),
-                    color: primaryColourLightGrey,
-                    child: MaterialButton(
-                      onPressed: () {
-                        print('sign out. clearing global user object');
-                        currentUser.clearData();
-
-                        print('navigating back to login page');
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginPage()));
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Text(
-                            'Sign Out',
-                            style: TextStyle(
-                                fontSize: paragraph - 3,
-                                color: primaryColourBlack),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // ================= DELETE ACCOUNT BUTTON
+                      Container(
+                        margin: addMargin('default', 3.00),
+                        child: MaterialButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Delete Account'),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Text(
+                                            'Hi, you\'re about to delete your account. This includes all previous and current orders. If that\'s okay, press the button below.'),
+                                        addSpacer('height', 10.00),
+                                        FilledButton(
+                                          onPressed: () async {
+                                            // if successfully deleted user, navigate back to main page
+                                            if (await deleteUser(
+                                                supabase,
+                                                context,
+                                                currentUser,
+                                                currentOrder)) {
+                                              if (context.mounted) {
+                                                Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const MyApp()));
+                                              }
+                                            } else {
+                                              if (context.mounted) {
+                                                displayAlertDialog(
+                                                    context,
+                                                    'Unable to Delete Account',
+                                                    'Sorry, it seem we were unable to delete your account. Please try again.');
+                                              }
+                                            }
+                                          },
+                                          style: const ButtonStyle(
+                                            backgroundColor:
+                                                WidgetStatePropertyAll(
+                                                    primaryColourRed),
+                                          ),
+                                          child: const Text(
+                                            'Delete Account',
+                                            style: TextStyle(
+                                              fontSize: paragraph,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                });
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                'Delete Account',
+                                style: TextStyle(
+                                  fontSize: paragraph - 3,
+                                  color: primaryColourBlack,
+                                ),
+                              ),
+                              addSpacer('width', 5.00),
+                              const Icon(
+                                Icons.delete,
+                                size: paragraph,
+                              ),
+                            ],
                           ),
-                          addSpacer('width', 5.00),
-                          const Icon(
-                            Icons.logout,
-                            size: paragraph,
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
+                      // ================= SIGN OUT BUTTON
+                      Container(
+                        margin: addMargin('default', 3.00),
+                        child: MaterialButton(
+                          onPressed: () {
+                            signOutUser(context, currentUser, currentOrder);
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                'Sign Out',
+                                style: TextStyle(
+                                    fontSize: paragraph - 3,
+                                    color: primaryColourBlack),
+                              ),
+                              addSpacer('width', 5.00),
+                              const Icon(
+                                Icons.logout,
+                                size: paragraph,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

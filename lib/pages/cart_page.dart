@@ -1,5 +1,7 @@
+import 'dart:async';
+
+import 'package:flavour_town_subs_flutter_application/database/supabase.dart';
 import 'package:flavour_town_subs_flutter_application/main.dart';
-import 'package:flavour_town_subs_flutter_application/pages/product_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -12,146 +14,16 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  var cartTotal = 0.00;
   late Future<List<Map<String, dynamic>>> _cartItemsList;
+  late Future<double> _cartTotal;
 
   final supabase = Supabase.instance.client;
 
-  // returns the list of items in the cart, only returns the first instance
-  Future<List<Map<String, dynamic>>> _getCartItems() async {
-    try {
-      final response = await supabase
-          .from('orders')
-          .select(
-              'order_id, order_items(quantity, item_price), products(product_name, product_desc, product_price)')
-          .eq('user_id', currentUser.getUUID())
-          .eq('order_status', 'in-progress');
-
-      List<Map<String, dynamic>> cartItemsList = [];
-      if (response.isEmpty) {
-        print('user\'s cart is empty');
-        return cartItemsList;
-      } else {
-        print('user\'s cart is not empty');
-
-        final data = response[0];
-        String orderId = data['order_id'];
-        List<dynamic> orderItemsList = data['order_items'];
-        List<dynamic> productsList = data['products'];
-
-        for (var i = 0; i < orderItemsList.length; i++) {
-          int quantity = orderItemsList[i]['quantity'];
-          double itemPrice = orderItemsList[i]['item_price'];
-          String productName = productsList[i]['product_name'];
-          String productDesc = productsList[i]['product_desc'];
-          double productPrice = productsList[i]['product_price'];
-
-          Map<String, dynamic> cartItem = {
-            'quantity': quantity,
-            'item_price': itemPrice,
-            'product_name': productName,
-            'product_desc': productDesc,
-            'product_price': productPrice,
-          };
-          cartItemsList.add(cartItem);
-        }
-        cartTotal = await _getCartTotal(orderId);
-        return cartItemsList;
-      }
-    } catch (e) {
-      throw Exception('Error: e');
-    }
-  }
-
-  // returns the current order's total
-  Future<double> _getCartTotal(String orderId) async {
-    final response = await supabase
-        .from('orders')
-        .select('order_total')
-        .eq('order_status', 'in-progress')
-        .eq('order_id', orderId)
-        .eq('user_id', currentUser.getUUID());
-
-    if (response.isEmpty) {
-      print('_getCartTotal: there is no current order, order total is empty');
-      return 0.00;
-    } else {
-      print('_getCartTotal, there is a cart total');
-      return response[0]['order_total'];
-    }
-  }
-
-  // conducts the check out process
-  // the in-progress order is marked as complete
-  Future<void> _checkOutCart(BuildContext context) async {
-    try {
-      final response = await supabase
-          .from('orders')
-          .update({'order_status': 'completed'})
-          .eq('user_id', currentUser.getUUID())
-          .select();
-
-      if (response.isEmpty) {
-        print('_checkOutCart, check out was not successful');
-        if (context.mounted) {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return const AlertDialog(
-                  title: Text(
-                    'Check Out Not Successful',
-                    style: TextStyle(
-                      fontSize: paragraph,
-                      fontWeight: bold,
-                    ),
-                  ),
-                  content: Text(
-                    'Sorry, your check out was not successful. Pleas try again.',
-                    style: TextStyle(
-                      fontSize: paragraph,
-                      fontWeight: bold,
-                    ),
-                  ),
-                );
-              });
-        }
-      } else {
-        print('_checkOutCart, check out was successful');
-        if (context.mounted) {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return const AlertDialog(
-                  title: Text(
-                    'Check Out Successful',
-                    style: TextStyle(
-                      fontSize: paragraph,
-                      fontWeight: bold,
-                    ),
-                  ),
-                  content: Text(
-                    'Your checkout was successful. Navigating back to menu page.',
-                    style: TextStyle(
-                      fontSize: paragraph,
-                      fontWeight: bold,
-                    ),
-                  ),
-                );
-              });
-
-          // navigate to product's page
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const ProductPage()));
-        }
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
-
   @override
   void initState() {
-    _cartItemsList = _getCartItems();
+    _cartItemsList =
+        getCartItems(supabase, currentUser, currentOrder.getOrderId());
+    _cartTotal = getCartTotal(supabase, currentUser, currentOrder.getOrderId());
     super.initState();
   }
 
@@ -259,12 +131,12 @@ class _CartPageState extends State<CartPage> {
                   }
                 },
               ),
-              // ================= ADD TO CART BUTTON =================
+              // ================= CHECK OUT BUTTON =================
               Padding(
                 padding: addPadding('tb', 16.00) + addPadding('lr', 10.00),
                 child: FilledButton(
                   onPressed: () {
-                    _checkOutCart(context);
+                    checkout(supabase, context, currentUser, currentOrder);
                   },
                   style: const ButtonStyle(
                     backgroundColor:
@@ -280,11 +152,50 @@ class _CartPageState extends State<CartPage> {
                           color: primaryColourBlack,
                         ),
                       ),
-                      Text(
-                        '\$$cartTotal',
-                        style: const TextStyle(
-                            fontSize: paragraph, color: primaryColourBlack),
-                      ),
+                      FutureBuilder(
+                          future: _cartTotal,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: Text(
+                                  '\$0.00',
+                                  style: TextStyle(
+                                    fontSize: paragraph,
+                                    color: primaryColourBlack,
+                                  ),
+                                ),
+                              );
+                            } else if (snapshot.hasError) {
+                              return const Center(
+                                child: Text(
+                                  '\$0.00',
+                                  style: TextStyle(
+                                    fontSize: paragraph,
+                                    color: primaryColourBlack,
+                                  ),
+                                ),
+                              );
+                            } else if (!snapshot.hasData) {
+                              return const Center(
+                                child: Text(
+                                  '\$0.00',
+                                  style: TextStyle(
+                                    fontSize: paragraph,
+                                    color: primaryColourBlack,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              String total = snapshot.data!.toStringAsFixed(2);
+                              return Text(
+                                '\$$total',
+                                style: const TextStyle(
+                                    fontSize: paragraph,
+                                    color: primaryColourBlack),
+                              );
+                            }
+                          })
                     ],
                   ),
                 ),
