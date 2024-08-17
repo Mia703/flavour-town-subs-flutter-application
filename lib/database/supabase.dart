@@ -491,7 +491,7 @@ Future<double> getCartTotal(
   }
 }
 
-Future<void> checkout(SupabaseClient supabase, BuildContext context,
+Future<bool> checkout(SupabaseClient supabase, BuildContext context,
     CurrentUser user, Order order) async {
   try {
     final response = await supabase
@@ -505,22 +505,11 @@ Future<void> checkout(SupabaseClient supabase, BuildContext context,
         .select();
     if (response.isNotEmpty) {
       log('checkout: check out successful');
-
       order.clearOrder();
-
-      if (context.mounted) {
-        displayAlertDialog(
-            context, 'Checkout Successful', 'Your checkout was successful.');
-
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const ProductPage()));
-      }
+      return true;
     } else {
       log('checkout: checkout unsuccessful');
-      if (context.mounted) {
-        displayAlertDialog(context, 'Checkout UnSuccessful',
-            'Sorry, it seems your checkout was not successful. Please try again.');
-      }
+      return false;
     }
   } catch (e) {
     log('checkout Error: $e');

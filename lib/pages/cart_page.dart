@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:flavour_town_subs_flutter_application/components/alertDialoge.dart';
 import 'package:flavour_town_subs_flutter_application/database/supabase.dart';
 import 'package:flavour_town_subs_flutter_application/main.dart';
+import 'package:flavour_town_subs_flutter_application/pages/product_page.dart';
 import 'package:flavour_town_subs_flutter_application/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -135,8 +137,50 @@ class _CartPageState extends State<CartPage> {
               Padding(
                 padding: addPadding('tb', 16.00) + addPadding('lr', 10.00),
                 child: FilledButton(
-                  onPressed: () {
-                    checkout(supabase, context, currentUser, currentOrder);
+                  onPressed: () async {
+                    if (await checkout(
+                        supabase, context, currentUser, currentOrder)) {
+                      if (context.mounted) {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Check Out Successful'),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                        'Your checkout was successful. Your order will be ready in 30 minutes.'),
+                                    addSpacer('height', 10.00),
+                                    FilledButton(
+                                        onPressed: () {
+                                          Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const ProductPage()));
+                                        },
+                                        style: const ButtonStyle(
+                                            backgroundColor:
+                                                WidgetStatePropertyAll(
+                                                    primaryColourBlue)),
+                                        child: const Text(
+                                          'Go to Menu Page',
+                                          style: TextStyle(
+                                            fontSize: paragraph,
+                                          ),
+                                        ))
+                                  ],
+                                ),
+                              );
+                            });
+                      }
+                    } else {
+                      if (context.mounted) {
+                        displayAlertDialog(context, 'Check Out UnSuccessful',
+                            'Sorry, it seems your check out was unsuccessful. Please try again.');
+                      }
+                    }
                   },
                   style: const ButtonStyle(
                     backgroundColor:
