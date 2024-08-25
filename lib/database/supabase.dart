@@ -4,6 +4,7 @@ import 'package:flavour_town_subs_flutter_application/components/alertDialoge.da
 import 'package:flavour_town_subs_flutter_application/main.dart';
 import 'package:flavour_town_subs_flutter_application/models/currentUser.dart';
 import 'package:flavour_town_subs_flutter_application/models/order.dart';
+import 'package:flavour_town_subs_flutter_application/pages/cart_page.dart';
 import 'package:flavour_town_subs_flutter_application/pages/login_page.dart';
 import 'package:flavour_town_subs_flutter_application/pages/product_page.dart';
 import 'package:flutter/material.dart';
@@ -426,7 +427,7 @@ Future<List<Map<String, dynamic>>> getCartItems(
     final response = await supabase
         .from('orders')
         .select(
-            'order_id, order_items(quantity, item_price), products(product_name, product_desc, product_price)')
+            'order_id, order_items(product_id, quantity, item_price), products(product_name, product_desc, product_price)')
         .eq('user_id', user.getUUID())
         .eq('order_status', 'in-progress');
 
@@ -439,6 +440,7 @@ Future<List<Map<String, dynamic>>> getCartItems(
       List<dynamic> productsList = data['products'];
 
       for (var i = 0; i < orderItemsList.length; i++) {
+        int productId = orderItemsList[i]['product_id'];
         int quantity = orderItemsList[i]['quantity'];
         double itemPrice = orderItemsList[i]['item_price'];
         String productName = productsList[i]['product_name'];
@@ -446,12 +448,15 @@ Future<List<Map<String, dynamic>>> getCartItems(
         double productPrice = productsList[i]['product_price'];
 
         Map<String, dynamic> cartItem = {
+          'order_id': response[0]['order_id'],
+          'product_id': productId,
           'quantity': quantity,
           'item_price': itemPrice,
           'product_name': productName,
           'product_desc': productDesc,
           'product_price': productPrice,
         };
+
         cartItemsList.add(cartItem);
       }
       return cartItemsList;
@@ -465,8 +470,59 @@ Future<List<Map<String, dynamic>>> getCartItems(
   }
 }
 
-// TODO: deletes an item from the cart... do I have to do this? :(
-Future<void> deleteCartItem() async {}
+Future<void> deleteCartItem(
+    SupabaseClient supabase,
+    BuildContext context,
+    String orderId,
+    int productId,
+    int quantity,
+    double productPrice,
+    double itemPrice) async {
+  try {
+    if (quantity == 1) {
+      log('deleteCartItem: quantity equals 1. deleting row');
+      final response = await supabase
+          .from('order_items')
+          .delete()
+          .eq('order_id', orderId)
+          .eq('product_id', productId)
+          .select();
+
+      if (response.isNotEmpty) {
+        log('deleteCartItem: successfully deleted cart item. refreshing page');
+        if (context.mounted) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const CartPage()));
+        }
+      } else {
+        log('deleteCartItem: unable to delete cart item');
+      }
+    } else {
+      log('deleteCartItem: quantity is greater than 1, updating row');
+      final response = await supabase
+          .from('order_items')
+          .update({
+            'quantity': quantity - 1,
+            'item_price': itemPrice - productPrice,
+          })
+          .eq('order_id', orderId)
+          .eq('product_id', productId)
+          .select();
+
+      if (response.isNotEmpty) {
+        log('deleteCartItem: decreased cart item quantity. refreshing page');
+        if (context.mounted) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const CartPage()));
+        }
+      } else {
+        log('deleteCartItem: unable to decrease cart item quantity');
+      }
+    }
+  } catch (e) {
+    log('deleteCartItem Error: $e');
+  }
+}
 
 Future<double> getCartTotal(
     SupabaseClient supabase, CurrentUser user, String orderId) async {

@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:easy_url_launcher/easy_url_launcher.dart';
 import 'package:flavour_town_subs_flutter_application/components/alertDialoge.dart';
+import 'package:flavour_town_subs_flutter_application/database/api.dart';
 import 'package:flavour_town_subs_flutter_application/database/supabase.dart';
 import 'package:flavour_town_subs_flutter_application/pages/account_settings_page.dart';
 import 'package:flavour_town_subs_flutter_application/pages/history_page.dart';
@@ -96,7 +98,7 @@ class _AccountPageState extends State<AccountPage> {
                             ),
                           ),
                           child: const Icon(
-                            Icons.add_a_photo,
+                            Icons.photo,
                             size: paragraph,
                             color: primaryColourBlack,
                           ),
@@ -192,6 +194,42 @@ class _AccountPageState extends State<AccountPage> {
                             ),
                           ),
                         ),
+                        // ================= GIFT CARD BUTTON
+                        Container(
+                          margin: addMargin('tb', 5.00),
+                          child: MaterialButton(
+                            padding: addPadding('default', 16.00),
+                            onPressed: () async {
+                              await EasyLauncher.url(
+                                  url:
+                                      'http://${ipAddress}/ict4580/registration.html');
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(Icons.card_giftcard),
+                                    addSpacer('width', 5.00),
+                                    const Text(
+                                      'Claim Your Gift Card!',
+                                      style: TextStyle(
+                                        fontSize: paragraph,
+                                        color: primaryColourBlack,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Icon(
+                                  Icons.arrow_forward,
+                                  size: headerThree,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        // ================= SPACER
+                        addSpacer('height', 40.0),
                       ],
                     ),
                   ),
@@ -204,111 +242,114 @@ class _AccountPageState extends State<AccountPage> {
                 fit: FlexFit.loose,
                 child: Align(
                   alignment: Alignment.bottomRight,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // ================= DELETE ACCOUNT BUTTON
-                      Container(
-                        margin: addMargin('default', 3.00),
-                        child: MaterialButton(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Delete Account'),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Text(
-                                            'Hi, you\'re about to delete your account. This includes all previous and current orders. If that\'s okay, press the button below.'),
-                                        addSpacer('height', 10.00),
-                                        FilledButton(
-                                          onPressed: () async {
-                                            // if successfully deleted user, navigate back to main page
-                                            if (await deleteUser(
-                                                supabase,
-                                                context,
-                                                currentUser,
-                                                currentOrder)) {
-                                              if (context.mounted) {
-                                                Navigator.pushReplacement(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            const MyApp()));
+                  child: Container(
+                    color: primaryColourWhite,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // ================= DELETE ACCOUNT BUTTON
+                        Container(
+                          margin: addMargin('default', 3.00),
+                          child: MaterialButton(
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Delete Account'),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Text(
+                                              'Hi, you\'re about to delete your account. This includes all previous and current orders. If that\'s okay, press the button below.'),
+                                          addSpacer('height', 10.00),
+                                          FilledButton(
+                                            onPressed: () async {
+                                              // if successfully deleted user, navigate back to main page
+                                              if (await deleteUser(
+                                                  supabase,
+                                                  context,
+                                                  currentUser,
+                                                  currentOrder)) {
+                                                if (context.mounted) {
+                                                  Navigator.pushReplacement(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              const MyApp()));
+                                                }
+                                              } else {
+                                                if (context.mounted) {
+                                                  displayAlertDialog(
+                                                      context,
+                                                      'Unable to Delete Account',
+                                                      'Sorry, it seem we were unable to delete your account. Please try again.');
+                                                }
                                               }
-                                            } else {
-                                              if (context.mounted) {
-                                                displayAlertDialog(
-                                                    context,
-                                                    'Unable to Delete Account',
-                                                    'Sorry, it seem we were unable to delete your account. Please try again.');
-                                              }
-                                            }
-                                          },
-                                          style: const ButtonStyle(
-                                            backgroundColor:
-                                                WidgetStatePropertyAll(
-                                                    primaryColourRed),
-                                          ),
-                                          child: const Text(
-                                            'Delete Account',
-                                            style: TextStyle(
-                                              fontSize: paragraph,
+                                            },
+                                            style: const ButtonStyle(
+                                              backgroundColor:
+                                                  WidgetStatePropertyAll(
+                                                      primaryColourRed),
                                             ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                });
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
-                                'Delete Account',
-                                style: TextStyle(
-                                  fontSize: paragraph - 3,
-                                  color: primaryColourBlack,
-                                ),
-                              ),
-                              addSpacer('width', 5.00),
-                              const Icon(
-                                Icons.delete,
-                                size: paragraph,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      // ================= SIGN OUT BUTTON
-                      Container(
-                        margin: addMargin('default', 3.00),
-                        child: MaterialButton(
-                          onPressed: () {
-                            signOutUser(context, currentUser, currentOrder);
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
-                                'Sign Out',
-                                style: TextStyle(
+                                            child: const Text(
+                                              'Delete Account',
+                                              style: TextStyle(
+                                                fontSize: paragraph,
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  });
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                  'Delete Account',
+                                  style: TextStyle(
                                     fontSize: paragraph - 3,
-                                    color: primaryColourBlack),
-                              ),
-                              addSpacer('width', 5.00),
-                              const Icon(
-                                Icons.logout,
-                                size: paragraph,
-                              ),
-                            ],
+                                    color: primaryColourBlack,
+                                  ),
+                                ),
+                                addSpacer('width', 5.00),
+                                const Icon(
+                                  Icons.delete,
+                                  size: paragraph,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                        // ================= SIGN OUT BUTTON
+                        Container(
+                          margin: addMargin('default', 3.00),
+                          child: MaterialButton(
+                            onPressed: () {
+                              signOutUser(context, currentUser, currentOrder);
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                  'Sign Out',
+                                  style: TextStyle(
+                                      fontSize: paragraph - 3,
+                                      color: primaryColourBlack),
+                                ),
+                                addSpacer('width', 5.00),
+                                const Icon(
+                                  Icons.logout,
+                                  size: paragraph,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

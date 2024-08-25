@@ -9,6 +9,7 @@ environment:
 dependencies:
   camera: ^0.11.0+1
   date_format: ^2.0.7
+  easy_url_launcher: ^0.0.7
   flutter:
     sdk: flutter
   google_fonts: ^6.2.1

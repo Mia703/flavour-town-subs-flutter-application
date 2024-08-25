@@ -105,23 +105,49 @@ class _CartPageState extends State<CartPage> {
                               ),
                               // ================= CART ITEM QUANTITY AND PRICE =================
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  // ================= cart item quantity and product price
-                                  Text(
-                                    '${cartItem['quantity']} x \$${cartItem['product_price']} = ',
-                                    style: const TextStyle(
-                                      fontSize: paragraph,
+                                  MaterialButton(
+                                    onPressed: () async {
+                                      deleteCartItem(
+                                          supabase,
+                                          context,
+                                          cartItem['order_id'],
+                                          cartItem['product_id'],
+                                          cartItem['quantity'],
+                                          cartItem['product_price'],
+                                          itemPrice);
+                                    },
+                                    minWidth: double.minPositive,
+                                    padding: addPadding('default', 5.00),
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    child: const Icon(
+                                      Icons.delete,
+                                      size: headerTwo,
                                     ),
                                   ),
-                                  // ================= cart item price
-                                  Text(
-                                    '\$$itemPriceString',
-                                    style: const TextStyle(
-                                      fontSize: headerThree,
-                                      fontWeight: bold,
-                                      color: primaryColourBlue,
-                                    ),
+                                  // ================= cart item quantity and product price
+                                  Row(
+                                    children: [
+                                      Text(
+                                        '${cartItem['quantity']} x \$${cartItem['product_price']} = ',
+                                        style: const TextStyle(
+                                          fontSize: paragraph,
+                                        ),
+                                      ),
+                                      // ================= cart item price
+                                      Text(
+                                        '\$$itemPriceString',
+                                        style: const TextStyle(
+                                          fontSize: headerThree,
+                                          fontWeight: bold,
+                                          color: primaryColourBlue,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
