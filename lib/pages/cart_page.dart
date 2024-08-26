@@ -18,7 +18,7 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   late Future<List<Map<String, dynamic>>> _cartItemsList;
   late Future<double> _cartTotal;
-
+  
   final supabase = Supabase.instance.client;
 
   @override

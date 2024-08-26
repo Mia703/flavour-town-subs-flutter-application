@@ -28,7 +28,7 @@ class _ProductPageState extends State<ProductPage> {
     // calls the countCartItems function every 2 seconds
     // function auto returns 0, if orderId is empty
     _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) async {
+    _timer = Timer.periodic(const Duration(seconds: 2), (Timer timer) async {
       int fetchedItems =
           await countCartItems(supabase, currentOrder.getOrderId());
 

@@ -630,12 +630,14 @@ Future<void> deleteOrderHistory(
         .select();
     if (response.isNotEmpty) {
       log('deleteOrderHistory: successfully deleted order history');
+      await Future.delayed(const Duration(seconds: 2));
       if (context.mounted) {
         displayAlertDialog(context, 'Order History Deleted',
             'Your order history was successfully deleted.');
       }
     } else {
       log('deleteOrderHistory: order history unsuccessfully deleted');
+      await Future.delayed(const Duration(seconds: 2));
       if (context.mounted) {
         displayAlertDialog(context, 'Order History Not Deleted',
             'Sorry, your order history was unsuccessfully deleted. Please try again.');
